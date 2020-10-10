@@ -13,16 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1SnapshotStorageSpec;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1PostgresArchiverSpec
@@ -41,7 +34,7 @@ public class V1alpha1PostgresArchiverSpec {
    * Get storage
    * @return storage
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1SnapshotStorageSpec getStorage() {
     return storage;
   }
@@ -71,12 +64,11 @@ public class V1alpha1PostgresArchiverSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1PostgresArchiverSpec {\n");
-    
-    sb.append("    storage: ").append(toIndentedString(storage)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1PostgresArchiverSpec {\n"
+        + "    storage: " + toIndentedString(storage) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

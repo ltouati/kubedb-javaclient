@@ -13,17 +13,11 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.kubernetes.client.models.V1PersistentVolumeClaimSpec;
-import io.kubernetes.client.models.V1ResourceRequirements;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimSpec;
+import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1ElasticsearchNode
@@ -51,7 +45,7 @@ public class V1alpha1ElasticsearchNode {
    * Get prefix
    * @return prefix
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getPrefix() {
     return prefix;
   }
@@ -138,15 +132,14 @@ public class V1alpha1ElasticsearchNode {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ElasticsearchNode {\n");
-    
-    sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n");
-    sb.append("    replicas: ").append(toIndentedString(replicas)).append("\n");
-    sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
-    sb.append("    storage: ").append(toIndentedString(storage)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1ElasticsearchNode {\n"
+        + "    prefix: " + toIndentedString(prefix) + "\n"
+        + "    replicas: " + toIndentedString(replicas) + "\n"
+        + "    resources: " + toIndentedString(resources) + "\n"
+        + "    storage: " + toIndentedString(storage) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

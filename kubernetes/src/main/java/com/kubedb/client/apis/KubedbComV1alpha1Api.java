@@ -13,6 +13,7 @@
 
 package com.kubedb.client.apis;
 
+import com.google.gson.reflect.TypeToken;
 import com.kubedb.client.ApiCallback;
 import com.kubedb.client.ApiClient;
 import com.kubedb.client.ApiException;
@@ -21,15 +22,6 @@ import com.kubedb.client.Configuration;
 import com.kubedb.client.Pair;
 import com.kubedb.client.ProgressRequestBody;
 import com.kubedb.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
-import io.kubernetes.client.models.V1APIResourceList;
-import io.kubernetes.client.models.V1DeleteOptions;
-import io.kubernetes.client.models.V1Status;
 import com.kubedb.client.models.V1alpha1DormantDatabase;
 import com.kubedb.client.models.V1alpha1DormantDatabaseList;
 import com.kubedb.client.models.V1alpha1Elasticsearch;
@@ -46,12 +38,18 @@ import com.kubedb.client.models.V1alpha1Redis;
 import com.kubedb.client.models.V1alpha1RedisList;
 import com.kubedb.client.models.V1alpha1Snapshot;
 import com.kubedb.client.models.V1alpha1SnapshotList;
-
+import io.kubernetes.client.openapi.models.V1APIResourceList;
+import io.kubernetes.client.openapi.models.V1DeleteOptions;
+import io.kubernetes.client.openapi.models.V1Status;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import okhttp3.Call;
+import okhttp3.Interceptor;
+import okhttp3.Response;
 
 public class KubedbComV1alpha1Api {
     private ApiClient apiClient;
@@ -82,21 +80,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedDormantDatabaseCall(String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedDormantDatabaseCall(String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -111,10 +108,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -123,11 +120,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedDormantDatabaseValidateBeforeCall(String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedDormantDatabaseValidateBeforeCall(String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -138,10 +136,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedDormantDatabaseCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedDormantDatabaseCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -173,7 +169,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabase> createNamespacedDormantDatabaseWithHttpInfo(String namespace, V1alpha1DormantDatabase body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedDormantDatabaseValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedDormantDatabaseValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -188,7 +184,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedDormantDatabaseAsync(String namespace, V1alpha1DormantDatabase body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
+    public Call createNamespacedDormantDatabaseAsync(String namespace, V1alpha1DormantDatabase body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -209,7 +205,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedDormantDatabaseValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedDormantDatabaseValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -224,21 +220,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedElasticsearchCall(String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedElasticsearchCall(String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -253,10 +248,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -265,11 +260,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedElasticsearchValidateBeforeCall(String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedElasticsearchValidateBeforeCall(String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -280,10 +276,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedElasticsearchCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedElasticsearchCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -315,7 +309,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Elasticsearch> createNamespacedElasticsearchWithHttpInfo(String namespace, V1alpha1Elasticsearch body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedElasticsearchValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedElasticsearchValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -330,7 +324,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedElasticsearchAsync(String namespace, V1alpha1Elasticsearch body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
+    public Call createNamespacedElasticsearchAsync(String namespace, V1alpha1Elasticsearch body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -351,7 +345,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedElasticsearchValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedElasticsearchValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -366,21 +360,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMemcachedCall(String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedMemcachedCall(String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -395,10 +388,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -407,11 +400,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedMemcachedValidateBeforeCall(String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedMemcachedValidateBeforeCall(String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -422,10 +416,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedMemcachedCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedMemcachedCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -457,7 +449,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Memcached> createNamespacedMemcachedWithHttpInfo(String namespace, V1alpha1Memcached body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedMemcachedValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedMemcachedValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -472,7 +464,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMemcachedAsync(String namespace, V1alpha1Memcached body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
+    public Call createNamespacedMemcachedAsync(String namespace, V1alpha1Memcached body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -493,7 +485,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedMemcachedValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedMemcachedValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -508,21 +500,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMongoDBCall(String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedMongoDBCall(String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -537,10 +528,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -549,11 +540,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedMongoDBValidateBeforeCall(String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedMongoDBValidateBeforeCall(String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -564,10 +556,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedMongoDBCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedMongoDBCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -599,7 +589,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDB> createNamespacedMongoDBWithHttpInfo(String namespace, V1alpha1MongoDB body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedMongoDBValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedMongoDBValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -614,7 +604,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMongoDBAsync(String namespace, V1alpha1MongoDB body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
+    public Call createNamespacedMongoDBAsync(String namespace, V1alpha1MongoDB body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -635,7 +625,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedMongoDBValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedMongoDBValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -650,21 +640,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMySQLCall(String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedMySQLCall(String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -679,10 +668,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -691,11 +680,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedMySQLValidateBeforeCall(String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedMySQLValidateBeforeCall(String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -706,10 +696,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedMySQLCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedMySQLCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -741,7 +729,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQL> createNamespacedMySQLWithHttpInfo(String namespace, V1alpha1MySQL body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedMySQLValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedMySQLValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -756,7 +744,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedMySQLAsync(String namespace, V1alpha1MySQL body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
+    public Call createNamespacedMySQLAsync(String namespace, V1alpha1MySQL body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -777,7 +765,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedMySQLValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedMySQLValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -792,21 +780,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedPostgresCall(String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedPostgresCall(String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -821,10 +808,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -833,11 +820,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedPostgresValidateBeforeCall(String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedPostgresValidateBeforeCall(String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -848,10 +836,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedPostgresCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedPostgresCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -883,7 +869,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Postgres> createNamespacedPostgresWithHttpInfo(String namespace, V1alpha1Postgres body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedPostgresValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedPostgresValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -898,7 +884,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedPostgresAsync(String namespace, V1alpha1Postgres body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
+    public Call createNamespacedPostgresAsync(String namespace, V1alpha1Postgres body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -919,7 +905,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedPostgresValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedPostgresValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -934,21 +920,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedRedisCall(String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedRedisCall(String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -963,10 +948,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -975,11 +960,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedRedisValidateBeforeCall(String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedRedisValidateBeforeCall(String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -990,10 +976,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedRedisCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedRedisCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -1025,7 +1009,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Redis> createNamespacedRedisWithHttpInfo(String namespace, V1alpha1Redis body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedRedisValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedRedisValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1040,7 +1024,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedRedisAsync(String namespace, V1alpha1Redis body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
+    public Call createNamespacedRedisAsync(String namespace, V1alpha1Redis body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1061,7 +1045,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedRedisValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedRedisValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1076,21 +1060,20 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedSnapshotCall(String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call createNamespacedSnapshotCall(String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1105,10 +1088,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -1117,11 +1100,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createNamespacedSnapshotValidateBeforeCall(String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createNamespacedSnapshotValidateBeforeCall(String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
@@ -1132,10 +1116,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling createNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = createNamespacedSnapshotCall(namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return createNamespacedSnapshotCall(namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -1167,7 +1149,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Snapshot> createNamespacedSnapshotWithHttpInfo(String namespace, V1alpha1Snapshot body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = createNamespacedSnapshotValidateBeforeCall(namespace, body, pretty, null, null);
+        Call call = createNamespacedSnapshotValidateBeforeCall(namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1182,7 +1164,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createNamespacedSnapshotAsync(String namespace, V1alpha1Snapshot body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
+    public Call createNamespacedSnapshotAsync(String namespace, V1alpha1Snapshot body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1203,7 +1185,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = createNamespacedSnapshotValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = createNamespacedSnapshotValidateBeforeCall(namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1225,15 +1207,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedDormantDatabaseCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedDormantDatabaseCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -1253,9 +1235,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1270,10 +1252,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -1286,16 +1268,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedDormantDatabaseCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedDormantDatabaseCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -1341,7 +1321,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedDormantDatabaseWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1363,7 +1343,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedDormantDatabaseAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedDormantDatabaseAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1384,7 +1364,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1406,15 +1386,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedElasticsearchCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedElasticsearchCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -1434,9 +1414,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1451,10 +1431,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -1467,16 +1447,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedElasticsearchValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedElasticsearchValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedElasticsearchCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedElasticsearchCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -1522,7 +1500,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedElasticsearchWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1544,7 +1522,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedElasticsearchAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedElasticsearchAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1565,7 +1543,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1587,15 +1565,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMemcachedCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedMemcachedCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -1615,9 +1593,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1632,10 +1610,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -1648,16 +1626,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedMemcachedValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedMemcachedValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMemcachedCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedMemcachedCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -1703,7 +1679,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedMemcachedWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1725,7 +1701,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMemcachedAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedMemcachedAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1746,7 +1722,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1768,15 +1744,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMongoDBCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedMongoDBCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -1796,9 +1772,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1813,10 +1789,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -1829,16 +1805,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedMongoDBValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedMongoDBValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMongoDBCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedMongoDBCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -1884,7 +1858,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedMongoDBWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1906,7 +1880,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMongoDBAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedMongoDBAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1927,7 +1901,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1949,15 +1923,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMySQLCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedMySQLCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -1977,9 +1951,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -1994,10 +1968,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2010,16 +1984,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedMySQLValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedMySQLValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMySQLCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedMySQLCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -2065,7 +2037,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedMySQLWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2087,7 +2059,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedMySQLAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedMySQLAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2108,7 +2080,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2130,15 +2102,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedPostgresCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedPostgresCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -2158,9 +2130,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -2175,10 +2147,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2191,16 +2163,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedPostgresValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedPostgresValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedPostgresCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedPostgresCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -2246,7 +2216,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedPostgresWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2268,7 +2238,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedPostgresAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedPostgresAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2289,7 +2259,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2311,15 +2281,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedRedisCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedRedisCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -2339,9 +2309,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -2356,10 +2326,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2372,16 +2342,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedRedisValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedRedisValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedRedisCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedRedisCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -2427,7 +2395,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedRedisWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2449,7 +2417,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedRedisAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedRedisAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2470,7 +2438,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2492,15 +2460,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedSnapshotCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteCollectionNamespacedSnapshotCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -2520,9 +2488,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -2537,10 +2505,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2553,16 +2521,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteCollectionNamespacedSnapshotValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteCollectionNamespacedSnapshotValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling deleteCollectionNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedSnapshotCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return deleteCollectionNamespacedSnapshotCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -2608,7 +2574,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteCollectionNamespacedSnapshotWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = deleteCollectionNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2630,7 +2596,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteCollectionNamespacedSnapshotAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteCollectionNamespacedSnapshotAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2651,7 +2617,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteCollectionNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = deleteCollectionNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2670,16 +2636,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedDormantDatabaseCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedDormantDatabaseCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -2689,9 +2654,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -2706,10 +2671,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2718,11 +2683,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -2738,10 +2704,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedDormantDatabaseCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedDormantDatabaseCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -2781,7 +2745,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedDormantDatabaseWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2800,7 +2764,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedDormantDatabaseAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedDormantDatabaseAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2821,7 +2785,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -2840,16 +2804,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedElasticsearchCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedElasticsearchCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -2859,9 +2822,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -2876,10 +2839,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -2888,11 +2851,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedElasticsearchValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedElasticsearchValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -2908,10 +2872,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedElasticsearchCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedElasticsearchCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -2951,7 +2913,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedElasticsearchWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -2970,7 +2932,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedElasticsearchAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedElasticsearchAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2991,7 +2953,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3010,16 +2972,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMemcachedCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedMemcachedCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3029,9 +2990,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3046,10 +3007,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3058,11 +3019,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedMemcachedValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedMemcachedValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3078,10 +3040,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedMemcachedCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedMemcachedCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3121,7 +3081,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedMemcachedWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3140,7 +3100,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMemcachedAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedMemcachedAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -3161,7 +3121,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3180,16 +3140,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMongoDBCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedMongoDBCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3199,9 +3158,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3216,10 +3175,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3228,11 +3187,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedMongoDBValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedMongoDBValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3248,10 +3208,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedMongoDBCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedMongoDBCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3291,7 +3249,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedMongoDBWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3310,7 +3268,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMongoDBAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedMongoDBAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -3331,7 +3289,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3350,16 +3308,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMySQLCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedMySQLCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3369,9 +3326,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3386,10 +3343,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3398,11 +3355,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedMySQLValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedMySQLValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3418,10 +3376,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedMySQLCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedMySQLCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3461,7 +3417,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedMySQLWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3480,7 +3436,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedMySQLAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedMySQLAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -3501,7 +3457,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3520,16 +3476,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedPostgresCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedPostgresCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3539,9 +3494,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3556,10 +3511,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3568,11 +3523,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedPostgresValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedPostgresValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3588,10 +3544,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedPostgresCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedPostgresCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3631,7 +3585,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedPostgresWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3650,7 +3604,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedPostgresAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedPostgresAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -3671,7 +3625,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3690,16 +3644,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedRedisCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedRedisCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3709,9 +3662,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3726,10 +3679,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3738,11 +3691,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedRedisValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedRedisValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3758,10 +3712,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedRedisCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedRedisCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3801,7 +3753,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedRedisWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3820,7 +3772,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedRedisAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedRedisAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -3841,7 +3793,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -3860,16 +3812,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedSnapshotCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call deleteNamespacedSnapshotCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (gracePeriodSeconds != null)
@@ -3879,9 +3830,9 @@ public class KubedbComV1alpha1Api {
         if (propagationPolicy != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("propagationPolicy", propagationPolicy));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -3896,10 +3847,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -3908,11 +3859,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteNamespacedSnapshotValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteNamespacedSnapshotValidateBeforeCall(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -3928,10 +3880,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling deleteNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = deleteNamespacedSnapshotCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
-        return call;
+
+        return deleteNamespacedSnapshotCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
 
         
         
@@ -3971,7 +3921,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1Status> deleteNamespacedSnapshotWithHttpInfo(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy) throws ApiException {
-        com.squareup.okhttp.Call call = deleteNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
+        Call call = deleteNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, null, null);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -3990,7 +3940,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteNamespacedSnapshotAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
+    public Call deleteNamespacedSnapshotAsync(String name, String namespace, V1DeleteOptions body, String pretty, Integer gracePeriodSeconds, Boolean orphanDependents, String propagationPolicy, final ApiCallback<V1Status> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4011,7 +3961,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
+        Call call = deleteNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, gracePeriodSeconds, orphanDependents, propagationPolicy, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1Status>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4023,18 +3973,18 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getAPIResourcesCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getAPIResourcesCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -4049,10 +3999,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4065,11 +4015,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getAPIResourcesValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = getAPIResourcesCall(progressListener, progressRequestListener);
-        return call;
+    private Call getAPIResourcesValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return getAPIResourcesCall(progressListener, progressRequestListener);
 
         
         
@@ -4095,7 +4043,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1APIResourceList> getAPIResourcesWithHttpInfo() throws ApiException {
-        com.squareup.okhttp.Call call = getAPIResourcesValidateBeforeCall(null, null);
+        Call call = getAPIResourcesValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<V1APIResourceList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4107,7 +4055,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getAPIResourcesAsync(final ApiCallback<V1APIResourceList> callback) throws ApiException {
+    public Call getAPIResourcesAsync(final ApiCallback<V1APIResourceList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4128,7 +4076,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = getAPIResourcesValidateBeforeCall(progressListener, progressRequestListener);
+        Call call = getAPIResourcesValidateBeforeCall(progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1APIResourceList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4149,14 +4097,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listDormantDatabaseForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listDormantDatabaseForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/dormantdatabases";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -4176,9 +4124,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -4193,10 +4141,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4209,11 +4157,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listDormantDatabaseForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listDormantDatabaseForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listDormantDatabaseForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listDormantDatabaseForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -4257,7 +4203,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabaseList> listDormantDatabaseForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listDormantDatabaseForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listDormantDatabaseForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabaseList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4278,7 +4224,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listDormantDatabaseForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1DormantDatabaseList> callback) throws ApiException {
+    public Call listDormantDatabaseForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1DormantDatabaseList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4299,7 +4245,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listDormantDatabaseForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listDormantDatabaseForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabaseList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4320,14 +4266,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listElasticsearchForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listElasticsearchForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/elasticsearches";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -4347,9 +4293,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -4364,10 +4310,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4380,11 +4326,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listElasticsearchForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listElasticsearchForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listElasticsearchForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listElasticsearchForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -4428,7 +4372,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1ElasticsearchList> listElasticsearchForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listElasticsearchForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listElasticsearchForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1ElasticsearchList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4449,7 +4393,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listElasticsearchForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1ElasticsearchList> callback) throws ApiException {
+    public Call listElasticsearchForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1ElasticsearchList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4470,7 +4414,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listElasticsearchForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listElasticsearchForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1ElasticsearchList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4491,14 +4435,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listMemcachedForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listMemcachedForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/memcacheds";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -4518,9 +4462,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -4535,10 +4479,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4551,11 +4495,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listMemcachedForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listMemcachedForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listMemcachedForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listMemcachedForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -4599,7 +4541,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MemcachedList> listMemcachedForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listMemcachedForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listMemcachedForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MemcachedList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4620,7 +4562,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listMemcachedForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MemcachedList> callback) throws ApiException {
+    public Call listMemcachedForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MemcachedList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4641,7 +4583,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listMemcachedForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listMemcachedForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MemcachedList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4662,14 +4604,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listMongoDBForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listMongoDBForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/mongodbs";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -4689,9 +4631,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -4706,10 +4648,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4722,11 +4664,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listMongoDBForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listMongoDBForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listMongoDBForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listMongoDBForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -4770,7 +4710,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDBList> listMongoDBForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listMongoDBForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listMongoDBForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDBList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4791,7 +4731,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listMongoDBForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MongoDBList> callback) throws ApiException {
+    public Call listMongoDBForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MongoDBList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4812,7 +4752,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listMongoDBForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listMongoDBForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDBList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -4833,14 +4773,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listMySQLForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listMySQLForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/mysqls";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -4860,9 +4800,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -4877,10 +4817,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -4893,11 +4833,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listMySQLForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listMySQLForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listMySQLForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listMySQLForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -4941,7 +4879,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQLList> listMySQLForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listMySQLForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listMySQLForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQLList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -4962,7 +4900,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listMySQLForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MySQLList> callback) throws ApiException {
+    public Call listMySQLForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MySQLList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -4983,7 +4921,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listMySQLForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listMySQLForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQLList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5005,15 +4943,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedDormantDatabaseCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedDormantDatabaseCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5033,9 +4971,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5050,10 +4988,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5066,16 +5004,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedDormantDatabaseValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedDormantDatabaseValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedDormantDatabaseCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedDormantDatabaseCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -5121,7 +5057,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabaseList> listNamespacedDormantDatabaseWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabaseList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -5143,7 +5079,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedDormantDatabaseAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1DormantDatabaseList> callback) throws ApiException {
+    public Call listNamespacedDormantDatabaseAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1DormantDatabaseList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -5164,7 +5100,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedDormantDatabaseValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabaseList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5186,15 +5122,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedElasticsearchCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedElasticsearchCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5214,9 +5150,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5231,10 +5167,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5247,16 +5183,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedElasticsearchValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedElasticsearchValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedElasticsearchCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedElasticsearchCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -5302,7 +5236,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1ElasticsearchList> listNamespacedElasticsearchWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1ElasticsearchList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -5324,7 +5258,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedElasticsearchAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1ElasticsearchList> callback) throws ApiException {
+    public Call listNamespacedElasticsearchAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1ElasticsearchList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -5345,7 +5279,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedElasticsearchValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1ElasticsearchList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5367,15 +5301,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMemcachedCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedMemcachedCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5395,9 +5329,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5412,10 +5346,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5428,16 +5362,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedMemcachedValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedMemcachedValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedMemcachedCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedMemcachedCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -5483,7 +5415,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MemcachedList> listNamespacedMemcachedWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MemcachedList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -5505,7 +5437,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMemcachedAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MemcachedList> callback) throws ApiException {
+    public Call listNamespacedMemcachedAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MemcachedList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -5526,7 +5458,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedMemcachedValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MemcachedList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5548,15 +5480,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMongoDBCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedMongoDBCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5576,9 +5508,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5593,10 +5525,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5609,16 +5541,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedMongoDBValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedMongoDBValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedMongoDBCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedMongoDBCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -5664,7 +5594,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDBList> listNamespacedMongoDBWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDBList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -5686,7 +5616,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMongoDBAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MongoDBList> callback) throws ApiException {
+    public Call listNamespacedMongoDBAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MongoDBList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -5707,7 +5637,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedMongoDBValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDBList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5729,15 +5659,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMySQLCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedMySQLCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5757,9 +5687,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5774,10 +5704,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5790,16 +5720,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedMySQLValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedMySQLValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedMySQLCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedMySQLCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -5845,7 +5773,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQLList> listNamespacedMySQLWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQLList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -5867,7 +5795,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedMySQLAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MySQLList> callback) throws ApiException {
+    public Call listNamespacedMySQLAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1MySQLList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -5888,7 +5816,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedMySQLValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQLList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -5910,15 +5838,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedPostgresCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedPostgresCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -5938,9 +5866,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -5955,10 +5883,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -5971,16 +5899,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedPostgresValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedPostgresValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedPostgresCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedPostgresCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6026,7 +5952,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1PostgresList> listNamespacedPostgresWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1PostgresList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6048,7 +5974,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedPostgresAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1PostgresList> callback) throws ApiException {
+    public Call listNamespacedPostgresAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1PostgresList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6069,7 +5995,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedPostgresValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1PostgresList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6091,15 +6017,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedRedisCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedRedisCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -6119,9 +6045,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -6136,10 +6062,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -6152,16 +6078,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedRedisValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedRedisValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedRedisCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedRedisCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6207,7 +6131,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1RedisList> listNamespacedRedisWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1RedisList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6229,7 +6153,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedRedisAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1RedisList> callback) throws ApiException {
+    public Call listNamespacedRedisAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1RedisList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6250,7 +6174,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedRedisValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1RedisList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6272,15 +6196,15 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedSnapshotCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listNamespacedSnapshotCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots"
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
         if (_continue != null)
@@ -6300,9 +6224,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -6317,10 +6241,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -6333,16 +6257,14 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listNamespacedSnapshotValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call listNamespacedSnapshotValidateBeforeCall(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'namespace' is set
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling listNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = listNamespacedSnapshotCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+
+        return listNamespacedSnapshotCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6388,7 +6310,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1SnapshotList> listNamespacedSnapshotWithHttpInfo(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1SnapshotList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6410,7 +6332,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listNamespacedSnapshotAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1SnapshotList> callback) throws ApiException {
+    public Call listNamespacedSnapshotAsync(String namespace, String pretty, String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1SnapshotList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6431,7 +6353,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listNamespacedSnapshotValidateBeforeCall(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1SnapshotList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6452,14 +6374,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listPostgresForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listPostgresForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/postgreses";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -6479,9 +6401,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -6496,10 +6418,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -6512,11 +6434,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listPostgresForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listPostgresForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listPostgresForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listPostgresForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6560,7 +6480,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1PostgresList> listPostgresForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listPostgresForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listPostgresForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1PostgresList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6581,7 +6501,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listPostgresForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1PostgresList> callback) throws ApiException {
+    public Call listPostgresForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1PostgresList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6602,7 +6522,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listPostgresForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listPostgresForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1PostgresList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6623,14 +6543,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listRedisForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listRedisForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/redises";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -6650,9 +6570,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -6667,10 +6587,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -6683,11 +6603,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listRedisForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listRedisForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listRedisForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listRedisForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6731,7 +6649,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1RedisList> listRedisForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listRedisForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listRedisForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1RedisList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6752,7 +6670,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listRedisForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1RedisList> callback) throws ApiException {
+    public Call listRedisForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1RedisList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6773,7 +6691,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listRedisForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listRedisForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1RedisList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6794,14 +6712,14 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call listSnapshotForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listSnapshotForAllNamespacesCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/snapshots";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (_continue != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("continue", _continue));
         if (fieldSelector != null)
@@ -6821,9 +6739,9 @@ public class KubedbComV1alpha1Api {
         if (watch != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("watch", watch));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf", "application/json;stream=watch", "application/vnd.kubernetes.protobuf;stream=watch"
@@ -6838,10 +6756,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -6854,11 +6772,9 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call listSnapshotForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = listSnapshotForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
-        return call;
+    private Call listSnapshotForAllNamespacesValidateBeforeCall(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return listSnapshotForAllNamespacesCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
 
         
         
@@ -6902,7 +6818,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1SnapshotList> listSnapshotForAllNamespacesWithHttpInfo(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch) throws ApiException {
-        com.squareup.okhttp.Call call = listSnapshotForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
+        Call call = listSnapshotForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1SnapshotList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -6923,7 +6839,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call listSnapshotForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1SnapshotList> callback) throws ApiException {
+    public Call listSnapshotForAllNamespacesAsync(String _continue, String fieldSelector, Boolean includeUninitialized, String labelSelector, Integer limit, String pretty, String resourceVersion, Integer timeoutSeconds, Boolean watch, final ApiCallback<V1alpha1SnapshotList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -6944,7 +6860,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = listSnapshotForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
+        Call call = listSnapshotForAllNamespacesValidateBeforeCall(_continue, fieldSelector, includeUninitialized, labelSelector, limit, pretty, resourceVersion, timeoutSeconds, watch, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1SnapshotList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -6960,22 +6876,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedDormantDatabaseCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedDormantDatabaseCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -6990,10 +6905,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7002,11 +6917,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7022,10 +6938,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedDormantDatabaseCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedDormantDatabaseCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7059,7 +6973,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabase> patchNamespacedDormantDatabaseWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7075,7 +6989,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedDormantDatabaseAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
+    public Call patchNamespacedDormantDatabaseAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7096,7 +7010,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7112,22 +7026,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedElasticsearchCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedElasticsearchCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7142,10 +7055,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7154,11 +7067,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedElasticsearchValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedElasticsearchValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7174,10 +7088,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedElasticsearchCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedElasticsearchCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7211,7 +7123,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Elasticsearch> patchNamespacedElasticsearchWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7227,7 +7139,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedElasticsearchAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
+    public Call patchNamespacedElasticsearchAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7248,7 +7160,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7264,22 +7176,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMemcachedCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedMemcachedCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7294,10 +7205,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7306,11 +7217,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedMemcachedValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedMemcachedValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7326,10 +7238,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedMemcachedCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedMemcachedCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7363,7 +7273,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Memcached> patchNamespacedMemcachedWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7379,7 +7289,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMemcachedAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
+    public Call patchNamespacedMemcachedAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7400,7 +7310,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7416,22 +7326,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMongoDBCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedMongoDBCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7446,10 +7355,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7458,11 +7367,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedMongoDBValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedMongoDBValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7478,10 +7388,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedMongoDBCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedMongoDBCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7515,7 +7423,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDB> patchNamespacedMongoDBWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7531,7 +7439,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMongoDBAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
+    public Call patchNamespacedMongoDBAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7552,7 +7460,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7568,22 +7476,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMySQLCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedMySQLCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7598,10 +7505,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7610,11 +7517,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedMySQLValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedMySQLValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7630,10 +7538,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedMySQLCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedMySQLCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7667,7 +7573,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQL> patchNamespacedMySQLWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7683,7 +7589,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedMySQLAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
+    public Call patchNamespacedMySQLAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7704,7 +7610,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7720,22 +7626,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedPostgresCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedPostgresCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7750,10 +7655,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7762,11 +7667,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedPostgresValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedPostgresValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7782,10 +7688,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedPostgresCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedPostgresCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7819,7 +7723,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Postgres> patchNamespacedPostgresWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7835,7 +7739,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedPostgresAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
+    public Call patchNamespacedPostgresAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -7856,7 +7760,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -7872,22 +7776,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedRedisCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedRedisCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -7902,10 +7805,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -7914,11 +7817,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedRedisValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedRedisValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -7934,10 +7838,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedRedisCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedRedisCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -7971,7 +7873,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Redis> patchNamespacedRedisWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -7987,7 +7889,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedRedisAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
+    public Call patchNamespacedRedisAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8008,7 +7910,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8024,22 +7926,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedSnapshotCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call patchNamespacedSnapshotCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8054,10 +7955,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8066,11 +7967,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PATCH", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call patchNamespacedSnapshotValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call patchNamespacedSnapshotValidateBeforeCall(String name, String namespace, Object body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8086,10 +7988,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling patchNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = patchNamespacedSnapshotCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return patchNamespacedSnapshotCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8123,7 +8023,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Snapshot> patchNamespacedSnapshotWithHttpInfo(String name, String namespace, Object body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = patchNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = patchNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8139,7 +8039,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call patchNamespacedSnapshotAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
+    public Call patchNamespacedSnapshotAsync(String name, String namespace, Object body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8160,7 +8060,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = patchNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = patchNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8175,22 +8075,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedDormantDatabaseCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedDormantDatabaseCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8205,10 +8105,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8221,7 +8121,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8232,10 +8132,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedDormantDatabaseCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedDormantDatabaseCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8267,7 +8165,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabase> readNamespacedDormantDatabaseWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedDormantDatabaseValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedDormantDatabaseValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8282,7 +8180,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedDormantDatabaseAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
+    public Call readNamespacedDormantDatabaseAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8303,7 +8201,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedDormantDatabaseValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedDormantDatabaseValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8318,22 +8216,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedElasticsearchCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedElasticsearchCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8348,10 +8246,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8364,7 +8262,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedElasticsearchValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedElasticsearchValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8375,10 +8273,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedElasticsearchCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedElasticsearchCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8410,7 +8306,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Elasticsearch> readNamespacedElasticsearchWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedElasticsearchValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedElasticsearchValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8425,7 +8321,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedElasticsearchAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
+    public Call readNamespacedElasticsearchAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8446,7 +8342,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedElasticsearchValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedElasticsearchValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8461,22 +8357,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMemcachedCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedMemcachedCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8491,10 +8387,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8507,7 +8403,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedMemcachedValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedMemcachedValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8518,10 +8414,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedMemcachedCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedMemcachedCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8553,7 +8447,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Memcached> readNamespacedMemcachedWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedMemcachedValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedMemcachedValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8568,7 +8462,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMemcachedAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
+    public Call readNamespacedMemcachedAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8589,7 +8483,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedMemcachedValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedMemcachedValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8604,22 +8498,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMongoDBCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedMongoDBCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8634,10 +8528,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8650,7 +8544,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedMongoDBValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedMongoDBValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8661,10 +8555,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedMongoDBCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedMongoDBCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8696,7 +8588,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDB> readNamespacedMongoDBWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedMongoDBValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedMongoDBValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8711,7 +8603,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMongoDBAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
+    public Call readNamespacedMongoDBAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8732,7 +8624,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedMongoDBValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedMongoDBValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8747,22 +8639,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMySQLCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedMySQLCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8777,10 +8669,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8793,7 +8685,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedMySQLValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedMySQLValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8804,10 +8696,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedMySQLCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedMySQLCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8839,7 +8729,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQL> readNamespacedMySQLWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedMySQLValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedMySQLValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8854,7 +8744,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedMySQLAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
+    public Call readNamespacedMySQLAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -8875,7 +8765,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedMySQLValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedMySQLValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -8890,22 +8780,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedPostgresCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedPostgresCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -8920,10 +8810,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -8936,7 +8826,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedPostgresValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedPostgresValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -8947,10 +8837,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedPostgresCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedPostgresCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -8982,7 +8870,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Postgres> readNamespacedPostgresWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedPostgresValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedPostgresValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -8997,7 +8885,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedPostgresAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
+    public Call readNamespacedPostgresAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9018,7 +8906,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedPostgresValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedPostgresValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9033,22 +8921,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedRedisCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedRedisCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9063,10 +8951,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9079,7 +8967,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedRedisValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedRedisValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9090,10 +8978,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedRedisCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedRedisCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9125,7 +9011,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Redis> readNamespacedRedisWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedRedisValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedRedisValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9140,7 +9026,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedRedisAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
+    public Call readNamespacedRedisAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9161,7 +9047,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedRedisValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedRedisValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9176,22 +9062,22 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedSnapshotCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call readNamespacedSnapshotCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9206,10 +9092,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9222,7 +9108,7 @@ public class KubedbComV1alpha1Api {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readNamespacedSnapshotValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call readNamespacedSnapshotValidateBeforeCall(String name, String namespace, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9233,10 +9119,8 @@ public class KubedbComV1alpha1Api {
         if (namespace == null) {
             throw new ApiException("Missing the required parameter 'namespace' when calling readNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = readNamespacedSnapshotCall(name, namespace, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return readNamespacedSnapshotCall(name, namespace, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9268,7 +9152,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Snapshot> readNamespacedSnapshotWithHttpInfo(String name, String namespace, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = readNamespacedSnapshotValidateBeforeCall(name, namespace, pretty, null, null);
+        Call call = readNamespacedSnapshotValidateBeforeCall(name, namespace, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9283,7 +9167,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readNamespacedSnapshotAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
+    public Call readNamespacedSnapshotAsync(String name, String namespace, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9304,7 +9188,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = readNamespacedSnapshotValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
+        Call call = readNamespacedSnapshotValidateBeforeCall(name, namespace, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9320,22 +9204,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedDormantDatabaseCall(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedDormantDatabaseCall(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/dormantdatabases/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9350,10 +9233,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9362,11 +9245,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedDormantDatabaseValidateBeforeCall(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9382,10 +9266,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedDormantDatabase(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedDormantDatabaseCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedDormantDatabaseCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9419,7 +9301,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1DormantDatabase> replaceNamespacedDormantDatabaseWithHttpInfo(String name, String namespace, V1alpha1DormantDatabase body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9435,7 +9317,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedDormantDatabaseAsync(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
+    public Call replaceNamespacedDormantDatabaseAsync(String name, String namespace, V1alpha1DormantDatabase body, String pretty, final ApiCallback<V1alpha1DormantDatabase> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9456,7 +9338,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedDormantDatabaseValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1DormantDatabase>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9472,22 +9354,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedElasticsearchCall(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedElasticsearchCall(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/elasticsearches/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9502,10 +9383,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9514,11 +9395,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedElasticsearchValidateBeforeCall(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedElasticsearchValidateBeforeCall(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9534,10 +9416,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedElasticsearch(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedElasticsearchCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedElasticsearchCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9571,7 +9451,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Elasticsearch> replaceNamespacedElasticsearchWithHttpInfo(String name, String namespace, V1alpha1Elasticsearch body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9587,7 +9467,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedElasticsearchAsync(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
+    public Call replaceNamespacedElasticsearchAsync(String name, String namespace, V1alpha1Elasticsearch body, String pretty, final ApiCallback<V1alpha1Elasticsearch> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9608,7 +9488,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedElasticsearchValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Elasticsearch>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9624,22 +9504,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMemcachedCall(String name, String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedMemcachedCall(String name, String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/memcacheds/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9654,10 +9533,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9666,11 +9545,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedMemcachedValidateBeforeCall(String name, String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedMemcachedValidateBeforeCall(String name, String namespace, V1alpha1Memcached body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9686,10 +9566,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedMemcached(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedMemcachedCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedMemcachedCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9723,7 +9601,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Memcached> replaceNamespacedMemcachedWithHttpInfo(String name, String namespace, V1alpha1Memcached body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9739,7 +9617,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMemcachedAsync(String name, String namespace, V1alpha1Memcached body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
+    public Call replaceNamespacedMemcachedAsync(String name, String namespace, V1alpha1Memcached body, String pretty, final ApiCallback<V1alpha1Memcached> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9760,7 +9638,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedMemcachedValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Memcached>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9776,22 +9654,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMongoDBCall(String name, String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedMongoDBCall(String name, String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mongodbs/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9806,10 +9683,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9818,11 +9695,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedMongoDBValidateBeforeCall(String name, String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedMongoDBValidateBeforeCall(String name, String namespace, V1alpha1MongoDB body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9838,10 +9716,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedMongoDB(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedMongoDBCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedMongoDBCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -9875,7 +9751,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MongoDB> replaceNamespacedMongoDBWithHttpInfo(String name, String namespace, V1alpha1MongoDB body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -9891,7 +9767,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMongoDBAsync(String name, String namespace, V1alpha1MongoDB body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
+    public Call replaceNamespacedMongoDBAsync(String name, String namespace, V1alpha1MongoDB body, String pretty, final ApiCallback<V1alpha1MongoDB> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -9912,7 +9788,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedMongoDBValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MongoDB>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -9928,22 +9804,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMySQLCall(String name, String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedMySQLCall(String name, String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/mysqls/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -9958,10 +9833,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -9970,11 +9845,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedMySQLValidateBeforeCall(String name, String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedMySQLValidateBeforeCall(String name, String namespace, V1alpha1MySQL body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -9990,10 +9866,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedMySQL(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedMySQLCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedMySQLCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -10027,7 +9901,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1MySQL> replaceNamespacedMySQLWithHttpInfo(String name, String namespace, V1alpha1MySQL body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -10043,7 +9917,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedMySQLAsync(String name, String namespace, V1alpha1MySQL body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
+    public Call replaceNamespacedMySQLAsync(String name, String namespace, V1alpha1MySQL body, String pretty, final ApiCallback<V1alpha1MySQL> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -10064,7 +9938,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedMySQLValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1MySQL>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -10080,22 +9954,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedPostgresCall(String name, String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedPostgresCall(String name, String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/postgreses/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -10110,10 +9983,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -10122,11 +9995,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedPostgresValidateBeforeCall(String name, String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedPostgresValidateBeforeCall(String name, String namespace, V1alpha1Postgres body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -10142,10 +10016,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedPostgres(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedPostgresCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedPostgresCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -10179,7 +10051,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Postgres> replaceNamespacedPostgresWithHttpInfo(String name, String namespace, V1alpha1Postgres body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -10195,7 +10067,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedPostgresAsync(String name, String namespace, V1alpha1Postgres body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
+    public Call replaceNamespacedPostgresAsync(String name, String namespace, V1alpha1Postgres body, String pretty, final ApiCallback<V1alpha1Postgres> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -10216,7 +10088,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedPostgresValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Postgres>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -10232,22 +10104,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedRedisCall(String name, String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedRedisCall(String name, String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/redises/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -10262,10 +10133,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -10274,11 +10145,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedRedisValidateBeforeCall(String name, String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedRedisValidateBeforeCall(String name, String namespace, V1alpha1Redis body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -10294,10 +10166,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedRedis(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedRedisCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedRedisCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -10331,7 +10201,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Redis> replaceNamespacedRedisWithHttpInfo(String name, String namespace, V1alpha1Redis body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -10347,7 +10217,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedRedisAsync(String name, String namespace, V1alpha1Redis body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
+    public Call replaceNamespacedRedisAsync(String name, String namespace, V1alpha1Redis body, String pretty, final ApiCallback<V1alpha1Redis> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -10368,7 +10238,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedRedisValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Redis>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -10384,22 +10254,21 @@ public class KubedbComV1alpha1Api {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedSnapshotCall(String name, String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = body;
-        
+    public Call replaceNamespacedSnapshotCall(String name, String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/v1alpha1/namespaces/{namespace}/snapshots/{name}"
-            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name.toString()))
-            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace.toString()));
+            .replaceAll("\\{" + "name" + "\\}", apiClient.escapeString(name))
+            .replaceAll("\\{" + "namespace" + "\\}", apiClient.escapeString(namespace));
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
         if (pretty != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pretty", pretty));
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -10414,10 +10283,10 @@ public class KubedbComV1alpha1Api {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -10426,11 +10295,12 @@ public class KubedbComV1alpha1Api {
         }
 
         String[] localVarAuthNames = new String[] {  };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams,
+            body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call replaceNamespacedSnapshotValidateBeforeCall(String name, String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call replaceNamespacedSnapshotValidateBeforeCall(String name, String namespace, V1alpha1Snapshot body, String pretty, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'name' is set
         if (name == null) {
@@ -10446,10 +10316,8 @@ public class KubedbComV1alpha1Api {
         if (body == null) {
             throw new ApiException("Missing the required parameter 'body' when calling replaceNamespacedSnapshot(Async)");
         }
-        
-        
-        com.squareup.okhttp.Call call = replaceNamespacedSnapshotCall(name, namespace, body, pretty, progressListener, progressRequestListener);
-        return call;
+
+        return replaceNamespacedSnapshotCall(name, namespace, body, pretty, progressListener, progressRequestListener);
 
         
         
@@ -10483,7 +10351,7 @@ public class KubedbComV1alpha1Api {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1alpha1Snapshot> replaceNamespacedSnapshotWithHttpInfo(String name, String namespace, V1alpha1Snapshot body, String pretty) throws ApiException {
-        com.squareup.okhttp.Call call = replaceNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, null, null);
+        Call call = replaceNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, null, null);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -10499,7 +10367,7 @@ public class KubedbComV1alpha1Api {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call replaceNamespacedSnapshotAsync(String name, String namespace, V1alpha1Snapshot body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
+    public Call replaceNamespacedSnapshotAsync(String name, String namespace, V1alpha1Snapshot body, String pretty, final ApiCallback<V1alpha1Snapshot> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -10520,7 +10388,7 @@ public class KubedbComV1alpha1Api {
             };
         }
 
-        com.squareup.okhttp.Call call = replaceNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
+        Call call = replaceNamespacedSnapshotValidateBeforeCall(name, namespace, body, pretty, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1alpha1Snapshot>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

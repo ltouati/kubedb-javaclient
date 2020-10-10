@@ -13,15 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 import org.joda.time.DateTime;
 
 /**
@@ -53,7 +47,7 @@ public class V1alpha1DormantDatabaseStatus {
    * Get creationTime
    * @return creationTime
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public DateTime getCreationTime() {
     return creationTime;
   }
@@ -71,7 +65,7 @@ public class V1alpha1DormantDatabaseStatus {
    * Get pausingTime
    * @return pausingTime
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public DateTime getPausingTime() {
     return pausingTime;
   }
@@ -89,7 +83,7 @@ public class V1alpha1DormantDatabaseStatus {
    * Get phase
    * @return phase
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getPhase() {
     return phase;
   }
@@ -107,7 +101,7 @@ public class V1alpha1DormantDatabaseStatus {
    * Get reason
    * @return reason
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getReason() {
     return reason;
   }
@@ -125,7 +119,7 @@ public class V1alpha1DormantDatabaseStatus {
    * Get wipeOutTime
    * @return wipeOutTime
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public DateTime getWipeOutTime() {
     return wipeOutTime;
   }
@@ -159,16 +153,15 @@ public class V1alpha1DormantDatabaseStatus {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1DormantDatabaseStatus {\n");
-    
-    sb.append("    creationTime: ").append(toIndentedString(creationTime)).append("\n");
-    sb.append("    pausingTime: ").append(toIndentedString(pausingTime)).append("\n");
-    sb.append("    phase: ").append(toIndentedString(phase)).append("\n");
-    sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
-    sb.append("    wipeOutTime: ").append(toIndentedString(wipeOutTime)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1DormantDatabaseStatus {\n"
+        + "    creationTime: " + toIndentedString(creationTime) + "\n"
+        + "    pausingTime: " + toIndentedString(pausingTime) + "\n"
+        + "    phase: " + toIndentedString(phase) + "\n"
+        + "    reason: " + toIndentedString(reason) + "\n"
+        + "    wipeOutTime: " + toIndentedString(wipeOutTime) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

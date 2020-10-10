@@ -2,7 +2,7 @@ package com.kubedb.client.util.credentials;
 
 import static com.kubedb.client.util.TestUtils.getApiKeyAuthFromClient;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import com.kubedb.client.ApiClient;
 import org.junit.Test;

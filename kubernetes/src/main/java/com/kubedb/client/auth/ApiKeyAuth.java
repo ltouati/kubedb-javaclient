@@ -14,9 +14,8 @@
 package com.kubedb.client.auth;
 
 import com.kubedb.client.Pair;
-
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 
 public class ApiKeyAuth implements Authentication {

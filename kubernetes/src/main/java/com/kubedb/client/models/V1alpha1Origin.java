@@ -13,17 +13,10 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1OriginSpec;
-import io.kubernetes.client.models.V1ObjectMeta;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1Origin
@@ -45,7 +38,7 @@ public class V1alpha1Origin {
    * Get metadata
    * @return metadata
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1ObjectMeta getMetadata() {
     return metadata;
   }
@@ -94,13 +87,12 @@ public class V1alpha1Origin {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1Origin {\n");
-    
-    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
-    sb.append("    spec: ").append(toIndentedString(spec)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1Origin {\n"
+        + "    metadata: " + toIndentedString(metadata) + "\n"
+        + "    spec: " + toIndentedString(spec) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

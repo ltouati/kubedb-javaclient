@@ -13,21 +13,10 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1AzureSpec;
-import com.kubedb.client.models.V1alpha1GCSSpec;
-import com.kubedb.client.models.V1alpha1LocalSpec;
-import com.kubedb.client.models.V1alpha1S3Spec;
-import com.kubedb.client.models.V1alpha1SwiftSpec;
-import io.kubernetes.client.models.V1ResourceRequirements;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1SnapshotSpec
@@ -67,7 +56,7 @@ public class V1alpha1SnapshotSpec {
    * Get azure
    * @return azure
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1AzureSpec getAzure() {
     return azure;
   }
@@ -103,7 +92,7 @@ public class V1alpha1SnapshotSpec {
    * Get gcs
    * @return gcs
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1GCSSpec getGcs() {
     return gcs;
   }
@@ -121,7 +110,7 @@ public class V1alpha1SnapshotSpec {
    * Get local
    * @return local
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1LocalSpec getLocal() {
     return local;
   }
@@ -157,7 +146,7 @@ public class V1alpha1SnapshotSpec {
    * Get s3
    * @return s3
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1S3Spec getS3() {
     return s3;
   }
@@ -175,7 +164,7 @@ public class V1alpha1SnapshotSpec {
    * Get storageSecretName
    * @return storageSecretName
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getStorageSecretName() {
     return storageSecretName;
   }
@@ -193,7 +182,7 @@ public class V1alpha1SnapshotSpec {
    * Get swift
    * @return swift
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1SwiftSpec getSwift() {
     return swift;
   }
@@ -230,19 +219,18 @@ public class V1alpha1SnapshotSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1SnapshotSpec {\n");
-    
-    sb.append("    azure: ").append(toIndentedString(azure)).append("\n");
-    sb.append("    databaseName: ").append(toIndentedString(databaseName)).append("\n");
-    sb.append("    gcs: ").append(toIndentedString(gcs)).append("\n");
-    sb.append("    local: ").append(toIndentedString(local)).append("\n");
-    sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
-    sb.append("    s3: ").append(toIndentedString(s3)).append("\n");
-    sb.append("    storageSecretName: ").append(toIndentedString(storageSecretName)).append("\n");
-    sb.append("    swift: ").append(toIndentedString(swift)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1SnapshotSpec {\n"
+        + "    azure: " + toIndentedString(azure) + "\n"
+        + "    databaseName: " + toIndentedString(databaseName) + "\n"
+        + "    gcs: " + toIndentedString(gcs) + "\n"
+        + "    local: " + toIndentedString(local) + "\n"
+        + "    resources: " + toIndentedString(resources) + "\n"
+        + "    s3: " + toIndentedString(s3) + "\n"
+        + "    storageSecretName: " + toIndentedString(storageSecretName) + "\n"
+        + "    swift: " + toIndentedString(swift) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

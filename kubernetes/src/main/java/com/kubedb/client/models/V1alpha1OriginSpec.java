@@ -13,22 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1ElasticsearchSpec;
-import com.kubedb.client.models.V1alpha1EtcdSpec;
-import com.kubedb.client.models.V1alpha1MemcachedSpec;
-import com.kubedb.client.models.V1alpha1MongoDBSpec;
-import com.kubedb.client.models.V1alpha1MySQLSpec;
-import com.kubedb.client.models.V1alpha1PostgresSpec;
-import com.kubedb.client.models.V1alpha1RedisSpec;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1OriginSpec
@@ -209,18 +196,17 @@ public class V1alpha1OriginSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1OriginSpec {\n");
-    
-    sb.append("    elasticsearch: ").append(toIndentedString(elasticsearch)).append("\n");
-    sb.append("    etcd: ").append(toIndentedString(etcd)).append("\n");
-    sb.append("    memcached: ").append(toIndentedString(memcached)).append("\n");
-    sb.append("    mongodb: ").append(toIndentedString(mongodb)).append("\n");
-    sb.append("    mysql: ").append(toIndentedString(mysql)).append("\n");
-    sb.append("    postgres: ").append(toIndentedString(postgres)).append("\n");
-    sb.append("    redis: ").append(toIndentedString(redis)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1OriginSpec {\n"
+        + "    elasticsearch: " + toIndentedString(elasticsearch) + "\n"
+        + "    etcd: " + toIndentedString(etcd) + "\n"
+        + "    memcached: " + toIndentedString(memcached) + "\n"
+        + "    mongodb: " + toIndentedString(mongodb) + "\n"
+        + "    mysql: " + toIndentedString(mysql) + "\n"
+        + "    postgres: " + toIndentedString(postgres) + "\n"
+        + "    redis: " + toIndentedString(redis) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

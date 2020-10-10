@@ -13,6 +13,7 @@
 
 package com.kubedb.client.apis;
 
+import com.google.gson.reflect.TypeToken;
 import com.kubedb.client.ApiCallback;
 import com.kubedb.client.ApiClient;
 import com.kubedb.client.ApiException;
@@ -21,19 +22,17 @@ import com.kubedb.client.Configuration;
 import com.kubedb.client.Pair;
 import com.kubedb.client.ProgressRequestBody;
 import com.kubedb.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
+import io.kubernetes.client.openapi.models.V1APIGroupList;
 import java.io.IOException;
-
-
-import io.kubernetes.client.models.V1APIGroupList;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import okhttp3.Call;
+import okhttp3.Interceptor;
+import okhttp3.Response;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ApisApi {
     private ApiClient apiClient;
@@ -61,18 +60,18 @@ public class ApisApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getAPIVersionsCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getAPIVersionsCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -87,10 +86,10 @@ public class ApisApi {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -103,11 +102,9 @@ public class ApisApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getAPIVersionsValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = getAPIVersionsCall(progressListener, progressRequestListener);
-        return call;
+    private Call getAPIVersionsValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return getAPIVersionsCall(progressListener, progressRequestListener);
 
         
         
@@ -133,7 +130,7 @@ public class ApisApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1APIGroupList> getAPIVersionsWithHttpInfo() throws ApiException {
-        com.squareup.okhttp.Call call = getAPIVersionsValidateBeforeCall(null, null);
+        Call call = getAPIVersionsValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<V1APIGroupList>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -145,7 +142,7 @@ public class ApisApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getAPIVersionsAsync(final ApiCallback<V1APIGroupList> callback) throws ApiException {
+    public Call getAPIVersionsAsync(final ApiCallback<V1APIGroupList> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -166,7 +163,7 @@ public class ApisApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getAPIVersionsValidateBeforeCall(progressListener, progressRequestListener);
+        Call call = getAPIVersionsValidateBeforeCall(progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1APIGroupList>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

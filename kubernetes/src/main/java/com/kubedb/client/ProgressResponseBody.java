@@ -13,16 +13,16 @@
 
 package com.kubedb.client;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
-
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ForwardingSource;
 import okio.Okio;
 import okio.Source;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ProgressResponseBody extends ResponseBody {
 
@@ -45,12 +45,13 @@ public class ProgressResponseBody extends ResponseBody {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return responseBody.contentLength();
     }
 
     @Override
-    public BufferedSource source() throws IOException {
+    @NonNull
+    public BufferedSource source() {
         if (bufferedSource == null) {
             bufferedSource = Okio.buffer(source(responseBody.source()));
         }
@@ -62,7 +63,7 @@ public class ProgressResponseBody extends ResponseBody {
             long totalBytesRead = 0L;
 
             @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
+            public long read(@NonNull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;

@@ -15,8 +15,6 @@ package com.kubedb.client.util;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.ws.WebSocket;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -28,6 +26,8 @@ import java.io.PipedOutputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import okhttp3.RequestBody;
+import okhttp3.ws.WebSocket;
 import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * WebSockets stream into a number of different streams using that protocol.
  */
 public class WebSocketStreamHandler implements WebSockets.SocketListener, Closeable {
+
   private static final Logger log = LoggerFactory.getLogger(WebSocketStreamHandler.class);
 
   private final Map<Integer, PipedInputStream> input = new HashMap<>();
@@ -49,15 +50,11 @@ public class WebSocketStreamHandler implements WebSockets.SocketListener, Closea
 
   private State state = State.UNINITIALIZED;
 
-  private static enum State {
-    UNINITIALIZED,
-    OPEN,
-    CLOSED
-  };
-
   @Override
   public synchronized void open(String protocol, WebSocket socket) {
-    if (state != State.UNINITIALIZED) throw new IllegalStateException();
+    if (state != State.UNINITIALIZED) {
+      throw new IllegalStateException();
+    }
     this.protocol = protocol;
     this.socket = socket;
     state = State.OPEN;
@@ -119,7 +116,9 @@ public class WebSocketStreamHandler implements WebSockets.SocketListener, Closea
    * @return The specified stream.
    */
   public synchronized InputStream getInputStream(int stream) {
-    if (state == State.CLOSED) throw new IllegalStateException();
+    if (state == State.CLOSED) {
+      throw new IllegalStateException();
+    }
 
     if (!input.containsKey(stream)) {
       try {
@@ -172,7 +171,14 @@ public class WebSocketStreamHandler implements WebSockets.SocketListener, Closea
     return pipedOutput.get(stream);
   }
 
+  private enum State {
+    UNINITIALIZED,
+    OPEN,
+    CLOSED
+  }
+
   private class WebSocketOutputStream extends OutputStream {
+
     private final byte stream;
 
     public WebSocketOutputStream(int stream) {
@@ -181,7 +187,7 @@ public class WebSocketStreamHandler implements WebSockets.SocketListener, Closea
 
     @Override
     public void write(int b) throws IOException {
-      write(new byte[] {(byte) b});
+      write(new byte[]{(byte) b});
     }
 
     @Override
@@ -193,7 +199,9 @@ public class WebSocketStreamHandler implements WebSockets.SocketListener, Closea
     public void write(byte[] b, int offset, int length) throws IOException {
       if (WebSocketStreamHandler.this.socket == null) {
         synchronized (WebSocketStreamHandler.this) {
-          if (state == State.CLOSED) throw new IllegalStateException();
+          if (state == State.CLOSED) {
+            throw new IllegalStateException();
+          }
           if (WebSocketStreamHandler.this.socket == null) {
             // wait for the websocket to be opened
             try {

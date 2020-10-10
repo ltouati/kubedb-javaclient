@@ -13,15 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 import org.joda.time.DateTime;
 
 /**
@@ -50,7 +44,7 @@ public class V1alpha1SnapshotStatus {
    * Get completionTime
    * @return completionTime
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public DateTime getCompletionTime() {
     return completionTime;
   }
@@ -68,7 +62,7 @@ public class V1alpha1SnapshotStatus {
    * Get phase
    * @return phase
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getPhase() {
     return phase;
   }
@@ -86,7 +80,7 @@ public class V1alpha1SnapshotStatus {
    * Get reason
    * @return reason
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getReason() {
     return reason;
   }
@@ -104,7 +98,7 @@ public class V1alpha1SnapshotStatus {
    * Get startTime
    * @return startTime
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public DateTime getStartTime() {
     return startTime;
   }
@@ -137,15 +131,14 @@ public class V1alpha1SnapshotStatus {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1SnapshotStatus {\n");
-    
-    sb.append("    completionTime: ").append(toIndentedString(completionTime)).append("\n");
-    sb.append("    phase: ").append(toIndentedString(phase)).append("\n");
-    sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
-    sb.append("    startTime: ").append(toIndentedString(startTime)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1SnapshotStatus {\n"
+        + "    completionTime: " + toIndentedString(completionTime) + "\n"
+        + "    phase: " + toIndentedString(phase) + "\n"
+        + "    reason: " + toIndentedString(reason) + "\n"
+        + "    startTime: " + toIndentedString(startTime) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

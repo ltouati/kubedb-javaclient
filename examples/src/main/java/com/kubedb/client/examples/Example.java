@@ -25,7 +25,7 @@ public class Example {
     V1alpha1RedisList list =
         api.listRedisForAllNamespaces(null, null, null, null, null, null, null, null, null);
     for (V1alpha1Redis item : list.getItems()) {
-      System.out.println(item.getMetadata().getName());
+      System.out.println(item);
     }
   }
 }

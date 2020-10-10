@@ -13,19 +13,12 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1Elasticsearch;
-import io.kubernetes.client.models.V1ListMeta;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1ListMeta;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * V1alpha1ElasticsearchList
@@ -69,7 +62,7 @@ public class V1alpha1ElasticsearchList {
 
   public V1alpha1ElasticsearchList addItemsItem(V1alpha1Elasticsearch itemsItem) {
     if (this.items == null) {
-      this.items = new ArrayList<V1alpha1Elasticsearch>();
+      this.items = new ArrayList<>();
     }
     this.items.add(itemsItem);
     return this;
@@ -115,7 +108,7 @@ public class V1alpha1ElasticsearchList {
    * Get metadata
    * @return metadata
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1ListMeta getMetadata() {
     return metadata;
   }
@@ -148,15 +141,14 @@ public class V1alpha1ElasticsearchList {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ElasticsearchList {\n");
-    
-    sb.append("    apiVersion: ").append(toIndentedString(apiVersion)).append("\n");
-    sb.append("    items: ").append(toIndentedString(items)).append("\n");
-    sb.append("    kind: ").append(toIndentedString(kind)).append("\n");
-    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1ElasticsearchList {\n"
+        + "    apiVersion: " + toIndentedString(apiVersion) + "\n"
+        + "    items: " + toIndentedString(items) + "\n"
+        + "    kind: " + toIndentedString(kind) + "\n"
+        + "    metadata: " + toIndentedString(metadata) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

@@ -13,16 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1Origin;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1DormantDatabaseSpec
@@ -93,13 +86,12 @@ public class V1alpha1DormantDatabaseSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1DormantDatabaseSpec {\n");
-    
-    sb.append("    origin: ").append(toIndentedString(origin)).append("\n");
-    sb.append("    wipeOut: ").append(toIndentedString(wipeOut)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1DormantDatabaseSpec {\n"
+        + "    origin: " + toIndentedString(origin) + "\n"
+        + "    wipeOut: " + toIndentedString(wipeOut) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

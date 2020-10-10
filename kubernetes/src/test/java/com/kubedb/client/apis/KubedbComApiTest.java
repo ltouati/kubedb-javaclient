@@ -14,14 +14,9 @@
 package com.kubedb.client.apis;
 
 import com.kubedb.client.ApiException;
-import io.kubernetes.client.models.V1APIGroup;
-import org.junit.Test;
+import io.kubernetes.client.openapi.models.V1APIGroup;
 import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.Test;
 
 /**
  * API tests for KubedbComApi

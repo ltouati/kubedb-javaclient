@@ -14,13 +14,9 @@
 package com.kubedb.client.auth;
 
 import com.kubedb.client.Pair;
-
-import com.squareup.okhttp.Credentials;
-
-import java.util.Map;
 import java.util.List;
-
-import java.io.UnsupportedEncodingException;
+import java.util.Map;
+import okhttp3.Credentials;
 
 public class HttpBasicAuth implements Authentication {
     private String username;

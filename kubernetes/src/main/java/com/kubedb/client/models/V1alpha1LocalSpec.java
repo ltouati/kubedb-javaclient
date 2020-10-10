@@ -13,42 +13,36 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.kubernetes.client.models.V1AWSElasticBlockStoreVolumeSource;
-import io.kubernetes.client.models.V1AzureDiskVolumeSource;
-import io.kubernetes.client.models.V1AzureFileVolumeSource;
-import io.kubernetes.client.models.V1CephFSVolumeSource;
-import io.kubernetes.client.models.V1CinderVolumeSource;
-import io.kubernetes.client.models.V1ConfigMapVolumeSource;
-import io.kubernetes.client.models.V1DownwardAPIVolumeSource;
-import io.kubernetes.client.models.V1EmptyDirVolumeSource;
-import io.kubernetes.client.models.V1FCVolumeSource;
-import io.kubernetes.client.models.V1FlexVolumeSource;
-import io.kubernetes.client.models.V1FlockerVolumeSource;
-import io.kubernetes.client.models.V1GCEPersistentDiskVolumeSource;
-import io.kubernetes.client.models.V1GitRepoVolumeSource;
-import io.kubernetes.client.models.V1GlusterfsVolumeSource;
-import io.kubernetes.client.models.V1HostPathVolumeSource;
-import io.kubernetes.client.models.V1ISCSIVolumeSource;
-import io.kubernetes.client.models.V1NFSVolumeSource;
-import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
-import io.kubernetes.client.models.V1PhotonPersistentDiskVolumeSource;
-import io.kubernetes.client.models.V1PortworxVolumeSource;
-import io.kubernetes.client.models.V1ProjectedVolumeSource;
-import io.kubernetes.client.models.V1QuobyteVolumeSource;
-import io.kubernetes.client.models.V1RBDVolumeSource;
-import io.kubernetes.client.models.V1ScaleIOVolumeSource;
-import io.kubernetes.client.models.V1SecretVolumeSource;
-import io.kubernetes.client.models.V1StorageOSVolumeSource;
-import io.kubernetes.client.models.V1VsphereVirtualDiskVolumeSource;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1AWSElasticBlockStoreVolumeSource;
+import io.kubernetes.client.openapi.models.V1AzureDiskVolumeSource;
+import io.kubernetes.client.openapi.models.V1AzureFileVolumeSource;
+import io.kubernetes.client.openapi.models.V1CephFSVolumeSource;
+import io.kubernetes.client.openapi.models.V1CinderVolumeSource;
+import io.kubernetes.client.openapi.models.V1ConfigMapVolumeSource;
+import io.kubernetes.client.openapi.models.V1DownwardAPIVolumeSource;
+import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.openapi.models.V1FCVolumeSource;
+import io.kubernetes.client.openapi.models.V1FlexVolumeSource;
+import io.kubernetes.client.openapi.models.V1FlockerVolumeSource;
+import io.kubernetes.client.openapi.models.V1GCEPersistentDiskVolumeSource;
+import io.kubernetes.client.openapi.models.V1GitRepoVolumeSource;
+import io.kubernetes.client.openapi.models.V1GlusterfsVolumeSource;
+import io.kubernetes.client.openapi.models.V1HostPathVolumeSource;
+import io.kubernetes.client.openapi.models.V1ISCSIVolumeSource;
+import io.kubernetes.client.openapi.models.V1NFSVolumeSource;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimVolumeSource;
+import io.kubernetes.client.openapi.models.V1PhotonPersistentDiskVolumeSource;
+import io.kubernetes.client.openapi.models.V1PortworxVolumeSource;
+import io.kubernetes.client.openapi.models.V1ProjectedVolumeSource;
+import io.kubernetes.client.openapi.models.V1QuobyteVolumeSource;
+import io.kubernetes.client.openapi.models.V1RBDVolumeSource;
+import io.kubernetes.client.openapi.models.V1ScaleIOVolumeSource;
+import io.kubernetes.client.openapi.models.V1SecretVolumeSource;
+import io.kubernetes.client.openapi.models.V1StorageOSVolumeSource;
+import io.kubernetes.client.openapi.models.V1VsphereVirtualDiskVolumeSource;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1LocalSpec
@@ -439,7 +433,7 @@ public class V1alpha1LocalSpec {
    * Get mountPath
    * @return mountPath
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getMountPath() {
     return mountPath;
   }
@@ -637,7 +631,7 @@ public class V1alpha1LocalSpec {
    * Get subPath
    * @return subPath
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getSubPath() {
     return subPath;
   }
@@ -713,40 +707,39 @@ public class V1alpha1LocalSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1LocalSpec {\n");
-    
-    sb.append("    awsElasticBlockStore: ").append(toIndentedString(awsElasticBlockStore)).append("\n");
-    sb.append("    azureDisk: ").append(toIndentedString(azureDisk)).append("\n");
-    sb.append("    azureFile: ").append(toIndentedString(azureFile)).append("\n");
-    sb.append("    cephfs: ").append(toIndentedString(cephfs)).append("\n");
-    sb.append("    cinder: ").append(toIndentedString(cinder)).append("\n");
-    sb.append("    configMap: ").append(toIndentedString(configMap)).append("\n");
-    sb.append("    downwardAPI: ").append(toIndentedString(downwardAPI)).append("\n");
-    sb.append("    emptyDir: ").append(toIndentedString(emptyDir)).append("\n");
-    sb.append("    fc: ").append(toIndentedString(fc)).append("\n");
-    sb.append("    flexVolume: ").append(toIndentedString(flexVolume)).append("\n");
-    sb.append("    flocker: ").append(toIndentedString(flocker)).append("\n");
-    sb.append("    gcePersistentDisk: ").append(toIndentedString(gcePersistentDisk)).append("\n");
-    sb.append("    gitRepo: ").append(toIndentedString(gitRepo)).append("\n");
-    sb.append("    glusterfs: ").append(toIndentedString(glusterfs)).append("\n");
-    sb.append("    hostPath: ").append(toIndentedString(hostPath)).append("\n");
-    sb.append("    iscsi: ").append(toIndentedString(iscsi)).append("\n");
-    sb.append("    mountPath: ").append(toIndentedString(mountPath)).append("\n");
-    sb.append("    nfs: ").append(toIndentedString(nfs)).append("\n");
-    sb.append("    persistentVolumeClaim: ").append(toIndentedString(persistentVolumeClaim)).append("\n");
-    sb.append("    photonPersistentDisk: ").append(toIndentedString(photonPersistentDisk)).append("\n");
-    sb.append("    portworxVolume: ").append(toIndentedString(portworxVolume)).append("\n");
-    sb.append("    projected: ").append(toIndentedString(projected)).append("\n");
-    sb.append("    quobyte: ").append(toIndentedString(quobyte)).append("\n");
-    sb.append("    rbd: ").append(toIndentedString(rbd)).append("\n");
-    sb.append("    scaleIO: ").append(toIndentedString(scaleIO)).append("\n");
-    sb.append("    secret: ").append(toIndentedString(secret)).append("\n");
-    sb.append("    storageos: ").append(toIndentedString(storageos)).append("\n");
-    sb.append("    subPath: ").append(toIndentedString(subPath)).append("\n");
-    sb.append("    vsphereVolume: ").append(toIndentedString(vsphereVolume)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1LocalSpec {\n"
+        + "    awsElasticBlockStore: " + toIndentedString(awsElasticBlockStore) + "\n"
+        + "    azureDisk: " + toIndentedString(azureDisk) + "\n"
+        + "    azureFile: " + toIndentedString(azureFile) + "\n"
+        + "    cephfs: " + toIndentedString(cephfs) + "\n"
+        + "    cinder: " + toIndentedString(cinder) + "\n"
+        + "    configMap: " + toIndentedString(configMap) + "\n"
+        + "    downwardAPI: " + toIndentedString(downwardAPI) + "\n"
+        + "    emptyDir: " + toIndentedString(emptyDir) + "\n"
+        + "    fc: " + toIndentedString(fc) + "\n"
+        + "    flexVolume: " + toIndentedString(flexVolume) + "\n"
+        + "    flocker: " + toIndentedString(flocker) + "\n"
+        + "    gcePersistentDisk: " + toIndentedString(gcePersistentDisk) + "\n"
+        + "    gitRepo: " + toIndentedString(gitRepo) + "\n"
+        + "    glusterfs: " + toIndentedString(glusterfs) + "\n"
+        + "    hostPath: " + toIndentedString(hostPath) + "\n"
+        + "    iscsi: " + toIndentedString(iscsi) + "\n"
+        + "    mountPath: " + toIndentedString(mountPath) + "\n"
+        + "    nfs: " + toIndentedString(nfs) + "\n"
+        + "    persistentVolumeClaim: " + toIndentedString(persistentVolumeClaim) + "\n"
+        + "    photonPersistentDisk: " + toIndentedString(photonPersistentDisk) + "\n"
+        + "    portworxVolume: " + toIndentedString(portworxVolume) + "\n"
+        + "    projected: " + toIndentedString(projected) + "\n"
+        + "    quobyte: " + toIndentedString(quobyte) + "\n"
+        + "    rbd: " + toIndentedString(rbd) + "\n"
+        + "    scaleIO: " + toIndentedString(scaleIO) + "\n"
+        + "    secret: " + toIndentedString(secret) + "\n"
+        + "    storageos: " + toIndentedString(storageos) + "\n"
+        + "    subPath: " + toIndentedString(subPath) + "\n"
+        + "    vsphereVolume: " + toIndentedString(vsphereVolume) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

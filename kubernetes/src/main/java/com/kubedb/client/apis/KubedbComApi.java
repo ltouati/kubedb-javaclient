@@ -13,6 +13,7 @@
 
 package com.kubedb.client.apis;
 
+import com.google.gson.reflect.TypeToken;
 import com.kubedb.client.ApiCallback;
 import com.kubedb.client.ApiClient;
 import com.kubedb.client.ApiException;
@@ -21,19 +22,16 @@ import com.kubedb.client.Configuration;
 import com.kubedb.client.Pair;
 import com.kubedb.client.ProgressRequestBody;
 import com.kubedb.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
+import io.kubernetes.client.openapi.models.V1APIGroup;
 import java.io.IOException;
-
-
-import io.kubernetes.client.models.V1APIGroup;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import okhttp3.Call;
+import okhttp3.Interceptor;
+import okhttp3.Response;
 
 public class KubedbComApi {
     private ApiClient apiClient;
@@ -61,18 +59,18 @@ public class KubedbComApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getAPIGroupCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getAPIGroupCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/apis/kubedb.com/";
 
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarQueryParams = new ArrayList<>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<>();
 
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarHeaderParams = new HashMap<>();
 
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        Map<String, Object> localVarFormParams = new HashMap<>();
 
         final String[] localVarAccepts = {
             "application/json", "application/yaml", "application/vnd.kubernetes.protobuf"
@@ -87,10 +85,10 @@ public class KubedbComApi {
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -103,11 +101,9 @@ public class KubedbComApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getAPIGroupValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        
-        com.squareup.okhttp.Call call = getAPIGroupCall(progressListener, progressRequestListener);
-        return call;
+    private Call getAPIGroupValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        return getAPIGroupCall(progressListener, progressRequestListener);
 
         
         
@@ -133,7 +129,7 @@ public class KubedbComApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<V1APIGroup> getAPIGroupWithHttpInfo() throws ApiException {
-        com.squareup.okhttp.Call call = getAPIGroupValidateBeforeCall(null, null);
+        Call call = getAPIGroupValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<V1APIGroup>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -145,7 +141,7 @@ public class KubedbComApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getAPIGroupAsync(final ApiCallback<V1APIGroup> callback) throws ApiException {
+    public Call getAPIGroupAsync(final ApiCallback<V1APIGroup> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -166,7 +162,7 @@ public class KubedbComApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getAPIGroupValidateBeforeCall(progressListener, progressRequestListener);
+        Call call = getAPIGroupValidateBeforeCall(progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<V1APIGroup>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

@@ -20,12 +20,6 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.ISODateTimeFormat;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -33,14 +27,19 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.ISODateTimeFormat;
 
 public class JSON {
     private Gson gson;
     private boolean isLenientOnJson = false;
-    private DateTypeAdapter dateTypeAdapter = new DateTypeAdapter();
-    private SqlDateTypeAdapter sqlDateTypeAdapter = new SqlDateTypeAdapter();
-    private DateTimeTypeAdapter dateTimeTypeAdapter = new DateTimeTypeAdapter();
-    private LocalDateTypeAdapter localDateTypeAdapter = new LocalDateTypeAdapter();
+    private final DateTypeAdapter dateTypeAdapter = new DateTypeAdapter();
+    private final SqlDateTypeAdapter sqlDateTypeAdapter = new SqlDateTypeAdapter();
+    private final DateTimeTypeAdapter dateTimeTypeAdapter = new DateTimeTypeAdapter();
+    private final LocalDateTypeAdapter localDateTypeAdapter = new LocalDateTypeAdapter();
 
     public JSON() {
         gson = new GsonBuilder()
@@ -159,7 +158,7 @@ public class JSON {
     /**
      * Gson TypeAdapter for Joda LocalDate type
      */
-    public class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
+    public static class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
 
         private DateTimeFormatter formatter;
 

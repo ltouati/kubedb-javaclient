@@ -14,9 +14,6 @@
 package com.kubedb.client.apis;
 
 import com.kubedb.client.ApiException;
-import io.kubernetes.client.models.V1APIResourceList;
-import io.kubernetes.client.models.V1DeleteOptions;
-import io.kubernetes.client.models.V1Status;
 import com.kubedb.client.models.V1alpha1DormantDatabase;
 import com.kubedb.client.models.V1alpha1DormantDatabaseList;
 import com.kubedb.client.models.V1alpha1Elasticsearch;
@@ -33,13 +30,11 @@ import com.kubedb.client.models.V1alpha1Redis;
 import com.kubedb.client.models.V1alpha1RedisList;
 import com.kubedb.client.models.V1alpha1Snapshot;
 import com.kubedb.client.models.V1alpha1SnapshotList;
-import org.junit.Test;
+import io.kubernetes.client.openapi.models.V1APIResourceList;
+import io.kubernetes.client.openapi.models.V1DeleteOptions;
+import io.kubernetes.client.openapi.models.V1Status;
 import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.Test;
 
 /**
  * API tests for KubedbComV1alpha1Api

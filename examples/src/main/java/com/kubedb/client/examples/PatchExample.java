@@ -28,8 +28,8 @@ import java.util.ArrayList;
  * <p>From inside $REPO_DIR/examples
  */
 public class PatchExample {
-  static String jsonPatchStr = "{\"op\":\"replace\",\"path\":\"/spec/doNotPause\",\"value\":false}";
-  static String jsonDepStr =
+  static final String jsonPatchStr = "{\"op\":\"replace\",\"path\":\"/spec/doNotPause\",\"value\":false}";
+  static final String jsonDepStr =
       "{\"apiVersion\":\"kubedb.com/v1alpha1\",\"kind\":\"Redis\",\"metadata\":{\"name\":\"redis-quickstart\",\"namespace\":\"default\"},\"spec\":{\"version\":\"4\",\"doNotPause\":true,\"storage\":{\"storageClassName\":\"standard\",\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"50Mi\"}}}}}";
 
   public static void main(String[] args) throws IOException, ApiException {
@@ -50,19 +50,16 @@ public class PatchExample {
   public V1alpha1Redis createRedis(String namespace, V1alpha1Redis body, String pretty)
       throws ApiException {
     KubedbComV1alpha1Api api = new KubedbComV1alpha1Api();
-    V1alpha1Redis deploy = api.createNamespacedRedis(namespace, body, pretty);
-    return deploy;
+    return api.createNamespacedRedis(namespace, body, pretty);
   }
 
   public V1alpha1Redis PatchRedis(String deployName, String namespace, Object body, String pretty)
       throws ApiException {
     KubedbComV1alpha1Api api = new KubedbComV1alpha1Api();
-    V1alpha1Redis deploy = api.patchNamespacedRedis(deployName, namespace, body, pretty);
-    return deploy;
+    return api.patchNamespacedRedis(deployName, namespace, body, pretty);
   }
 
   public Object deserialize(String jsonStr, Class<?> targetClass) {
-    Object obj = (new Gson()).fromJson(jsonStr, targetClass);
-    return obj;
+    return (new Gson()).fromJson(jsonStr, targetClass);
   }
 }

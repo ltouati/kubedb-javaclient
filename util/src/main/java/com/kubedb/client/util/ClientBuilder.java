@@ -12,7 +12,10 @@ limitations under the License.
  */
 package com.kubedb.client.util;
 
-import static com.kubedb.client.util.KubeConfig.*;
+import static com.kubedb.client.util.KubeConfig.ENV_HOME;
+import static com.kubedb.client.util.KubeConfig.KUBECONFIG;
+import static com.kubedb.client.util.KubeConfig.KUBEDIR;
+import static com.kubedb.client.util.KubeConfig.loadKubeConfig;
 
 import com.kubedb.client.ApiClient;
 import com.kubedb.client.util.credentials.AccessTokenAuthentication;
@@ -30,8 +33,11 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** A Builder which allows the construction of {@link ApiClient}s in a fluent fashion. */
+/**
+ * A Builder which allows the construction of {@link ApiClient}s in a fluent fashion.
+ */
 public class ClientBuilder {
+
   private static final Logger log = LoggerFactory.getLogger(ClientBuilder.class);
 
   private String basePath = Config.DEFAULT_FALLBACK_HOST;
@@ -43,9 +49,9 @@ public class ClientBuilder {
    * Creates an {@link ApiClient} by calling {@link #standard()} and {@link #build()}.
    *
    * @return An <tt>ApiClient</tt> configured using the precedence specified for {@link
-   *     #standard()}.
+   * #standard()}.
    * @throws IOException if the configuration file or a file specified in a configuration file
-   *     cannot be read.
+   * cannot be read.
    */
   public static ApiClient defaultClient() throws IOException {
     return ClientBuilder.standard().build();
@@ -63,7 +69,7 @@ public class ClientBuilder {
    *
    * @return <tt>ClientBuilder</tt> pre-configured using the above precedence
    * @throws IOException if the configuration file or a file specified in a configuration file
-   *     cannot be read.
+   * cannot be read.
    */
   public static ClientBuilder standard() throws IOException {
     final FileReader kubeConfigReader = findConfigFromEnv();
@@ -135,7 +141,8 @@ public class ClientBuilder {
    *
    * @param config The {@link KubeConfig} to configure the builder from.
    * @return <tt>ClientBuilder</tt> configured from the provided <tt>KubeConfig</tt>
-   * @throws IOException if the files specified in the provided <tt>KubeConfig</tt> are not readable
+   * @throws IOException if the files specified in the provided <tt>KubeConfig</tt> are not
+   * readable
    */
   public static ClientBuilder kubeconfig(KubeConfig config) throws IOException {
     final ClientBuilder builder = new ClientBuilder();

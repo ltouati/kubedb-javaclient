@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,27 +33,42 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
-/** KubeConfig represents a kubernetes client configuration */
+/**
+ * KubeConfig represents a kubernetes client configuration
+ */
+@SuppressWarnings("unchecked")
 public class KubeConfig {
-  private static final Logger log = LoggerFactory.getLogger(KubeConfig.class);
 
   // Defaults for where to find a kubeconfig file
   public static final String ENV_HOME = "HOME";
   public static final String KUBEDIR = ".kube";
   public static final String KUBECONFIG = "config";
-  private static Map<String, Authenticator> authenticators = new HashMap<>();
+  private static final Logger log = LoggerFactory.getLogger(KubeConfig.class);
+  private static final Map<String, Authenticator> authenticators = new HashMap<>();
 
   // Note to the reader: I considered creating a Config object
   // and parsing into that instead of using Maps, but honestly
   // this seemed cleaner than a bunch of boilerplate classes
 
-  private ArrayList<Object> clusters;
-  private ArrayList<Object> contexts;
-  private ArrayList<Object> users;
+  static {
+    registerAuthenticator(new GCPAuthenticator());
+    registerAuthenticator(new AzureActiveDirectoryAuthenticator());
+  }
+
   Map<String, Object> currentContext;
   Map<String, Object> currentCluster;
   Map<String, Object> currentUser;
   String currentNamespace;
+  private final ArrayList<Object> clusters;
+  private final ArrayList<Object> contexts;
+  private final ArrayList<Object> users;
+
+  public KubeConfig(
+      ArrayList<Object> contexts, ArrayList<Object> clusters, ArrayList<Object> users) {
+    this.contexts = contexts;
+    this.clusters = clusters;
+    this.users = users;
+  }
 
   public static void registerAuthenticator(Authenticator auth) {
     synchronized (authenticators) {
@@ -60,12 +76,9 @@ public class KubeConfig {
     }
   }
 
-  static {
-    registerAuthenticator(new GCPAuthenticator());
-    registerAuthenticator(new AzureActiveDirectoryAuthenticator());
-  }
-
-  /** Load a Kubernetes config from the default location */
+  /**
+   * Load a Kubernetes config from the default location
+   */
   public static KubeConfig loadDefaultKubeConfig() throws FileNotFoundException {
     File config = new File(new File(System.getenv(ENV_HOME), KUBEDIR), KUBECONFIG);
     if (!config.exists()) {
@@ -74,7 +87,10 @@ public class KubeConfig {
     return loadKubeConfig(new FileReader(config));
   }
 
-  /** Load a Kubernetes config from a Reader */
+  /**
+   * Load a Kubernetes config from a Reader
+   */
+  @SuppressWarnings("unchecked")
   public static KubeConfig loadKubeConfig(Reader input) {
     Yaml yaml = new Yaml(new SafeConstructor());
     Object config = yaml.load(input);
@@ -91,11 +107,35 @@ public class KubeConfig {
     return kubeConfig;
   }
 
-  public KubeConfig(
-      ArrayList<Object> contexts, ArrayList<Object> clusters, ArrayList<Object> users) {
-    this.contexts = contexts;
-    this.clusters = clusters;
-    this.users = users;
+  private static String getData(Map<String, Object> obj, String key) {
+    if (obj == null) {
+      return null;
+    }
+    return (String) obj.get(key);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Map<String, Object> findObject(ArrayList<Object> list, String name) {
+    if (list == null) {
+      return null;
+    }
+    for (Object obj : list) {
+      Map<String, Object> map = (Map<String, Object>) obj;
+      if (name.equals(map.get("name"))) {
+        return map;
+      }
+    }
+    return null;
+  }
+
+  public static byte[] getDataOrFile(final String data, final String file) throws IOException {
+    if (data != null) {
+      return Base64.decodeBase64(data);
+    }
+    if (file != null) {
+      return Files.readAllBytes(Paths.get(file));
+    }
+    return null;
   }
 
   public boolean setContext(String context) {
@@ -201,7 +241,7 @@ public class KubeConfig {
       String tokenFile = (String) currentUser.get("tokenFile");
       try {
         byte[] data = Files.readAllBytes(FileSystems.getDefault().getPath(tokenFile));
-        return new String(data, "UTF-8");
+        return new String(data, StandardCharsets.UTF_8);
       } catch (IOException ex) {
         log.error("Failed to read token file", ex);
       }
@@ -214,38 +254,8 @@ public class KubeConfig {
       return false;
     }
     if (currentCluster.containsKey("insecure-skip-tls-verify")) {
-      return !((Boolean) currentCluster.get("insecure-skip-tls-verify")).booleanValue();
+      return !(Boolean) currentCluster.get("insecure-skip-tls-verify");
     }
     return true;
-  }
-
-  private static String getData(Map<String, Object> obj, String key) {
-    if (obj == null) {
-      return null;
-    }
-    return (String) obj.get(key);
-  }
-
-  private static Map<String, Object> findObject(ArrayList<Object> list, String name) {
-    if (list == null) {
-      return null;
-    }
-    for (Object obj : list) {
-      Map<String, Object> map = (Map<String, Object>) obj;
-      if (name.equals((String) map.get("name"))) {
-        return map;
-      }
-    }
-    return null;
-  }
-
-  public static byte[] getDataOrFile(final String data, final String file) throws IOException {
-    if (data != null) {
-      return Base64.decodeBase64(data);
-    }
-    if (file != null) {
-      return Files.readAllBytes(Paths.get(file));
-    }
-    return null;
   }
 }

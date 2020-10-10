@@ -12,7 +12,9 @@ limitations under the License.
 */
 package com.kubedb.client.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import com.kubedb.client.util.authenticators.GCPAuthenticator;
 import java.io.File;

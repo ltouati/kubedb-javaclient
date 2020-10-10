@@ -13,29 +13,19 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.ComGithubAppscodeKubeMonApiAgentSpec;
-import com.kubedb.client.models.V1alpha1BackupScheduleSpec;
-import com.kubedb.client.models.V1alpha1InitSpec;
-import com.kubedb.client.models.V1alpha1PostgresArchiverSpec;
-import io.kubernetes.client.models.V1Affinity;
-import io.kubernetes.client.models.V1LocalObjectReference;
-import io.kubernetes.client.models.V1PersistentVolumeClaimSpec;
-import io.kubernetes.client.models.V1ResourceRequirements;
-import io.kubernetes.client.models.V1SecretVolumeSource;
-import io.kubernetes.client.models.V1Toleration;
-import io.swagger.annotations.ApiModel;
+import io.kubernetes.client.openapi.models.V1Affinity;
+import io.kubernetes.client.openapi.models.V1LocalObjectReference;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimSpec;
+import io.kubernetes.client.openapi.models.V1ResourceRequirements;
+import io.kubernetes.client.openapi.models.V1SecretVolumeSource;
+import io.kubernetes.client.openapi.models.V1Toleration;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * V1alpha1PostgresSpec
@@ -190,7 +180,7 @@ public class V1alpha1PostgresSpec {
 
   public V1alpha1PostgresSpec addImagePullSecretsItem(V1LocalObjectReference imagePullSecretsItem) {
     if (this.imagePullSecrets == null) {
-      this.imagePullSecrets = new ArrayList<V1LocalObjectReference>();
+      this.imagePullSecrets = new ArrayList<>();
     }
     this.imagePullSecrets.add(imagePullSecretsItem);
     return this;
@@ -252,7 +242,7 @@ public class V1alpha1PostgresSpec {
 
   public V1alpha1PostgresSpec putNodeSelectorItem(String key, String nodeSelectorItem) {
     if (this.nodeSelector == null) {
-      this.nodeSelector = new HashMap<String, String>();
+      this.nodeSelector = new HashMap<>();
     }
     this.nodeSelector.put(key, nodeSelectorItem);
     return this;
@@ -386,7 +376,7 @@ public class V1alpha1PostgresSpec {
 
   public V1alpha1PostgresSpec addTolerationsItem(V1Toleration tolerationsItem) {
     if (this.tolerations == null) {
-      this.tolerations = new ArrayList<V1Toleration>();
+      this.tolerations = new ArrayList<>();
     }
     this.tolerations.add(tolerationsItem);
     return this;
@@ -460,28 +450,27 @@ public class V1alpha1PostgresSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1PostgresSpec {\n");
-    
-    sb.append("    affinity: ").append(toIndentedString(affinity)).append("\n");
-    sb.append("    archiver: ").append(toIndentedString(archiver)).append("\n");
-    sb.append("    backupSchedule: ").append(toIndentedString(backupSchedule)).append("\n");
-    sb.append("    databaseSecret: ").append(toIndentedString(databaseSecret)).append("\n");
-    sb.append("    doNotPause: ").append(toIndentedString(doNotPause)).append("\n");
-    sb.append("    imagePullSecrets: ").append(toIndentedString(imagePullSecrets)).append("\n");
-    sb.append("    init: ").append(toIndentedString(init)).append("\n");
-    sb.append("    monitor: ").append(toIndentedString(monitor)).append("\n");
-    sb.append("    nodeSelector: ").append(toIndentedString(nodeSelector)).append("\n");
-    sb.append("    replicas: ").append(toIndentedString(replicas)).append("\n");
-    sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
-    sb.append("    schedulerName: ").append(toIndentedString(schedulerName)).append("\n");
-    sb.append("    standbyMode: ").append(toIndentedString(standbyMode)).append("\n");
-    sb.append("    storage: ").append(toIndentedString(storage)).append("\n");
-    sb.append("    streamingMode: ").append(toIndentedString(streamingMode)).append("\n");
-    sb.append("    tolerations: ").append(toIndentedString(tolerations)).append("\n");
-    sb.append("    version: ").append(toIndentedString(version)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1PostgresSpec {\n"
+        + "    affinity: " + toIndentedString(affinity) + "\n"
+        + "    archiver: " + toIndentedString(archiver) + "\n"
+        + "    backupSchedule: " + toIndentedString(backupSchedule) + "\n"
+        + "    databaseSecret: " + toIndentedString(databaseSecret) + "\n"
+        + "    doNotPause: " + toIndentedString(doNotPause) + "\n"
+        + "    imagePullSecrets: " + toIndentedString(imagePullSecrets) + "\n"
+        + "    init: " + toIndentedString(init) + "\n"
+        + "    monitor: " + toIndentedString(monitor) + "\n"
+        + "    nodeSelector: " + toIndentedString(nodeSelector) + "\n"
+        + "    replicas: " + toIndentedString(replicas) + "\n"
+        + "    resources: " + toIndentedString(resources) + "\n"
+        + "    schedulerName: " + toIndentedString(schedulerName) + "\n"
+        + "    standbyMode: " + toIndentedString(standbyMode) + "\n"
+        + "    storage: " + toIndentedString(storage) + "\n"
+        + "    streamingMode: " + toIndentedString(streamingMode) + "\n"
+        + "    tolerations: " + toIndentedString(tolerations) + "\n"
+        + "    version: " + toIndentedString(version) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

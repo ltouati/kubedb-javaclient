@@ -13,15 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1S3Spec
@@ -46,7 +40,7 @@ public class V1alpha1S3Spec {
    * Get bucket
    * @return bucket
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public String getBucket() {
     return bucket;
   }
@@ -64,7 +58,7 @@ public class V1alpha1S3Spec {
    * Get endpoint
    * @return endpoint
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getEndpoint() {
     return endpoint;
   }
@@ -82,7 +76,7 @@ public class V1alpha1S3Spec {
    * Get prefix
    * @return prefix
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getPrefix() {
     return prefix;
   }
@@ -114,14 +108,13 @@ public class V1alpha1S3Spec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1S3Spec {\n");
-    
-    sb.append("    bucket: ").append(toIndentedString(bucket)).append("\n");
-    sb.append("    endpoint: ").append(toIndentedString(endpoint)).append("\n");
-    sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1S3Spec {\n"
+        + "    bucket: " + toIndentedString(bucket) + "\n"
+        + "    endpoint: " + toIndentedString(endpoint) + "\n"
+        + "    prefix: " + toIndentedString(prefix) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

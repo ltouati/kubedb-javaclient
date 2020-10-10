@@ -13,18 +13,11 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ComGithubAppscodeKubeMonApiPrometheusSpec
@@ -68,7 +61,7 @@ public class ComGithubAppscodeKubeMonApiPrometheusSpec {
 
   public ComGithubAppscodeKubeMonApiPrometheusSpec putLabelsItem(String key, String labelsItem) {
     if (this.labels == null) {
-      this.labels = new HashMap<String, String>();
+      this.labels = new HashMap<>();
     }
     this.labels.put(key, labelsItem);
     return this;
@@ -147,15 +140,14 @@ public class ComGithubAppscodeKubeMonApiPrometheusSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ComGithubAppscodeKubeMonApiPrometheusSpec {\n");
-    
-    sb.append("    interval: ").append(toIndentedString(interval)).append("\n");
-    sb.append("    labels: ").append(toIndentedString(labels)).append("\n");
-    sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n");
-    sb.append("    port: ").append(toIndentedString(port)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class ComGithubAppscodeKubeMonApiPrometheusSpec {\n"
+        + "    interval: " + toIndentedString(interval) + "\n"
+        + "    labels: " + toIndentedString(labels) + "\n"
+        + "    namespace: " + toIndentedString(namespace) + "\n"
+        + "    port: " + toIndentedString(port) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

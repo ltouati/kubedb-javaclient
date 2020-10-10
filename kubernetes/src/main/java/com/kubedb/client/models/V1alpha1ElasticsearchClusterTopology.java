@@ -13,16 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1ElasticsearchNode;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1ElasticsearchClusterTopology
@@ -47,7 +40,7 @@ public class V1alpha1ElasticsearchClusterTopology {
    * Get client
    * @return client
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public V1alpha1ElasticsearchNode getClient() {
     return client;
   }
@@ -65,7 +58,7 @@ public class V1alpha1ElasticsearchClusterTopology {
    * Get data
    * @return data
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public V1alpha1ElasticsearchNode getData() {
     return data;
   }
@@ -83,7 +76,7 @@ public class V1alpha1ElasticsearchClusterTopology {
    * Get master
    * @return master
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public V1alpha1ElasticsearchNode getMaster() {
     return master;
   }
@@ -115,14 +108,13 @@ public class V1alpha1ElasticsearchClusterTopology {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ElasticsearchClusterTopology {\n");
-    
-    sb.append("    client: ").append(toIndentedString(client)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    master: ").append(toIndentedString(master)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1ElasticsearchClusterTopology {\n"
+        + "    client: " + toIndentedString(client) + "\n"
+        + "    data: " + toIndentedString(data) + "\n"
+        + "    master: " + toIndentedString(master) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

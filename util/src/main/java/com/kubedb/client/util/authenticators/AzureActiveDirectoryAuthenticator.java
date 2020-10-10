@@ -21,12 +21,13 @@ import java.util.Map;
  * information (e.g. 'azure')
  */
 public class AzureActiveDirectoryAuthenticator implements Authenticator {
-  static {
-    KubeConfig.registerAuthenticator(new AzureActiveDirectoryAuthenticator());
-  }
 
   private static final String ACCESS_TOKEN = "access-token";
   private static final String EXPIRES_ON = "expires-on";
+
+  static {
+    KubeConfig.registerAuthenticator(new AzureActiveDirectoryAuthenticator());
+  }
 
   @Override
   public String getName() {
@@ -42,10 +43,7 @@ public class AzureActiveDirectoryAuthenticator implements Authenticator {
   public boolean isExpired(Map<String, Object> config) {
     String expiresOn = (String) config.get(EXPIRES_ON);
     Date expiry = new Date(Long.parseLong(expiresOn) * 1000);
-    if (expiry != null && expiry.compareTo(new Date()) <= 0) {
-      return true;
-    }
-    return false;
+    return expiry != null && expiry.compareTo(new Date()) <= 0;
   }
 
   @Override

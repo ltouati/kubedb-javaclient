@@ -13,15 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1SnapshotSourceSpec
@@ -43,7 +37,7 @@ public class V1alpha1SnapshotSourceSpec {
    * Get name
    * @return name
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public String getName() {
     return name;
   }
@@ -61,7 +55,7 @@ public class V1alpha1SnapshotSourceSpec {
    * Get namespace
    * @return namespace
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true)
   public String getNamespace() {
     return namespace;
   }
@@ -92,13 +86,12 @@ public class V1alpha1SnapshotSourceSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1SnapshotSourceSpec {\n");
-    
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1SnapshotSourceSpec {\n"
+        + "    name: " + toIndentedString(name) + "\n"
+        + "    namespace: " + toIndentedString(namespace) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

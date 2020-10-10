@@ -12,7 +12,8 @@ limitations under the License.
 */
 package com.kubedb.client.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import com.kubedb.client.ApiClient;
 import java.io.File;

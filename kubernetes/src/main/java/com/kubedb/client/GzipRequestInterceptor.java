@@ -13,13 +13,18 @@
 
 package com.kubedb.client;
 
-import com.squareup.okhttp.*;
+
+import java.io.IOException;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
-
-import java.io.IOException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Encodes request bodies using gzip.
@@ -27,6 +32,7 @@ import java.io.IOException;
  * Taken from https://github.com/square/okhttp/issues/350
  */
 class GzipRequestInterceptor implements Interceptor {
+    @NonNull
     @Override public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
         if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
@@ -55,7 +61,7 @@ class GzipRequestInterceptor implements Interceptor {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(@NonNull BufferedSink sink) throws IOException {
                 sink.write(buffer.snapshot());
             }
         };
@@ -71,7 +77,7 @@ class GzipRequestInterceptor implements Interceptor {
                 return -1; // We don't know the compressed length in advance!
             }
 
-            @Override public void writeTo(BufferedSink sink) throws IOException {
+            @Override public void writeTo(@NonNull BufferedSink sink) throws IOException {
                 BufferedSink gzipSink = Okio.buffer(new GzipSink(sink));
                 body.writeTo(gzipSink);
                 gzipSink.close();

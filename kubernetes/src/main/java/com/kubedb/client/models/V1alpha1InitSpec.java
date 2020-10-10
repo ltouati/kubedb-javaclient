@@ -13,18 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1PostgresWALSourceSpec;
-import com.kubedb.client.models.V1alpha1ScriptSourceSpec;
-import com.kubedb.client.models.V1alpha1SnapshotSourceSpec;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1InitSpec
@@ -49,7 +40,7 @@ public class V1alpha1InitSpec {
    * Get postgresWAL
    * @return postgresWAL
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1PostgresWALSourceSpec getPostgresWAL() {
     return postgresWAL;
   }
@@ -67,7 +58,7 @@ public class V1alpha1InitSpec {
    * Get scriptSource
    * @return scriptSource
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1ScriptSourceSpec getScriptSource() {
     return scriptSource;
   }
@@ -85,7 +76,7 @@ public class V1alpha1InitSpec {
    * Get snapshotSource
    * @return snapshotSource
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1SnapshotSourceSpec getSnapshotSource() {
     return snapshotSource;
   }
@@ -117,14 +108,13 @@ public class V1alpha1InitSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1InitSpec {\n");
-    
-    sb.append("    postgresWAL: ").append(toIndentedString(postgresWAL)).append("\n");
-    sb.append("    scriptSource: ").append(toIndentedString(scriptSource)).append("\n");
-    sb.append("    snapshotSource: ").append(toIndentedString(snapshotSource)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1InitSpec {\n"
+        + "    postgresWAL: " + toIndentedString(postgresWAL) + "\n"
+        + "    scriptSource: " + toIndentedString(scriptSource) + "\n"
+        + "    snapshotSource: " + toIndentedString(snapshotSource) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

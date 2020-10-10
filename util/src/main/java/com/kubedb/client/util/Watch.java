@@ -12,18 +12,18 @@ limitations under the License.
 */
 package com.kubedb.client.util;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 import com.kubedb.client.ApiClient;
 import com.kubedb.client.ApiException;
 import com.kubedb.client.JSON;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.ResponseBody;
-import io.kubernetes.client.models.V1Status;
+import io.kubernetes.client.openapi.models.V1Status;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import okhttp3.Call;
+import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,50 +35,28 @@ import org.slf4j.LoggerFactory;
  */
 public class Watch<T>
     implements Iterable<Watch.Response<T>>,
-        Iterator<Watch.Response<T>>,
-        java.io.Closeable,
-        AutoCloseable {
+    Iterator<Watch.Response<T>>,
+    java.io.Closeable,
+    AutoCloseable {
 
   private static final Logger log = LoggerFactory.getLogger(Watch.class);
-
-  /**
-   * Response class holds a watch response that has a `type` that can be ADDED, MODIFIED, DELETED
-   * and ERROR. It also hold the actual target object.
-   */
-  public static class Response<T> {
-    @SerializedName("type")
-    public String type;
-
-    @SerializedName("object")
-    public T object;
-
-    public V1Status status;
-
-    Response(String type, T object) {
-      this.type = type;
-      this.object = object;
-      this.status = null;
-    }
-
-    Response(String type, V1Status status) {
-      this.type = type;
-      this.object = null;
-      this.status = status;
-    }
+  final Type watchType;
+  final ResponseBody response;
+  final JSON json;
+  private Watch(JSON json, ResponseBody body, Type watchType) {
+    this.response = body;
+    this.watchType = watchType;
+    this.json = json;
   }
-
-  Type watchType;
-  ResponseBody response;
-  JSON json;
 
   /**
    * Creates a watch on a TYPENAME (T) using an API Client and a Call object.
    *
    * @param client the API client
    * @param call the call object returned by api.{ListOperation}Call(...) method. Make sure watch
-   *     flag is set in the call.
+   * flag is set in the call.
    * @param watchType The type of the WatchResponse&lt;T&gt;. Use something like new
-   *     TypeToken&lt;Watch.Response&lt;TYPENAME&gt;&gt;(){}.getType()
+   * TypeToken&lt;Watch.Response&lt;TYPENAME&gt;&gt;(){}.getType()
    * @param <T> TYPENAME.
    * @return Watch object on TYPENAME
    * @throws ApiException on IO exceptions.
@@ -91,11 +69,12 @@ public class Watch<T>
       throw new ApiException("Watch is incompatible with debugging mode active.");
     }
     try {
-      com.squareup.okhttp.Response response = call.execute();
+      okhttp3.Response response = call.execute();
       if (!response.isSuccessful()) {
         String respBody = null;
         try (ResponseBody body = response.body()) {
           if (body != null) {
+            assert response.body() != null;
             respBody = response.body().string();
           }
         } catch (IOException e) {
@@ -111,12 +90,6 @@ public class Watch<T>
     }
   }
 
-  private Watch(JSON json, ResponseBody body, Type watchType) {
-    this.response = body;
-    this.watchType = watchType;
-    this.json = json;
-  }
-
   public Response<T> next() {
     try {
       String line = response.source().readUtf8Line();
@@ -126,9 +99,10 @@ public class Watch<T>
       try {
         return json.deserialize(line, watchType);
       } catch (JsonParseException ex) {
-        Type statusType = new TypeToken<Response<V1Status>>() {}.getType();
+        Type statusType = new TypeToken<Response<V1Status>>() {
+        }.getType();
         Response<V1Status> status = json.deserialize(line, statusType);
-        return new Response<T>(status.type, status.object);
+        return new Response<>(status.type, status.object);
       }
     } catch (IOException e) {
       throw new RuntimeException("IO Exception during next method.", e);
@@ -153,5 +127,32 @@ public class Watch<T>
 
   public void close() throws IOException {
     this.response.close();
+  }
+
+  /**
+   * Response class holds a watch response that has a `type` that can be ADDED, MODIFIED, DELETED
+   * and ERROR. It also hold the actual target object.
+   */
+  public static class Response<T> {
+
+    @SerializedName("type")
+    public final String type;
+
+    @SerializedName("object")
+    public final T object;
+
+    public final V1Status status;
+
+    Response(String type, T object) {
+      this.type = type;
+      this.object = object;
+      this.status = null;
+    }
+
+    Response(String type, V1Status status) {
+      this.type = type;
+      this.object = null;
+      this.status = status;
+    }
   }
 }

@@ -12,8 +12,11 @@ import javax.net.ssl.KeyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Uses Client Certificates to configure {@link ApiClient} authentication to the Kubernetes API. */
+/**
+ * Uses Client Certificates to configure {@link ApiClient} authentication to the Kubernetes API.
+ */
 public class ClientCertificateAuthentication implements Authentication {
+
   private static final Logger log = LoggerFactory.getLogger(ClientCertificateAuthentication.class);
   private final byte[] certificate;
   private final byte[] key;
@@ -27,10 +30,10 @@ public class ClientCertificateAuthentication implements Authentication {
   public void provide(ApiClient client) {
     String dataString = new String(key);
     String algo = "";
-    if (dataString.indexOf("BEGIN EC PRIVATE KEY") != -1) {
+    if (dataString.contains("BEGIN EC PRIVATE KEY")) {
       algo = "EC";
     }
-    if (dataString.indexOf("BEGIN RSA PRIVATE KEY") != -1) {
+    if (dataString.contains("BEGIN RSA PRIVATE KEY")) {
       algo = "RSA";
     }
     try {

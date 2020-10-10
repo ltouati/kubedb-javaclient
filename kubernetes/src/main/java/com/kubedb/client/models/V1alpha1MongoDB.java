@@ -13,18 +13,11 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.V1alpha1MongoDBSpec;
-import com.kubedb.client.models.V1alpha1MongoDBStatus;
-import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * MongoDB defines a MongoDB database.
@@ -92,7 +85,7 @@ public class V1alpha1MongoDB {
    * Get metadata
    * @return metadata
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1ObjectMeta getMetadata() {
     return metadata;
   }
@@ -110,7 +103,7 @@ public class V1alpha1MongoDB {
    * Get spec
    * @return spec
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1MongoDBSpec getSpec() {
     return spec;
   }
@@ -128,7 +121,7 @@ public class V1alpha1MongoDB {
    * Get status
    * @return status
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public V1alpha1MongoDBStatus getStatus() {
     return status;
   }
@@ -162,16 +155,15 @@ public class V1alpha1MongoDB {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1MongoDB {\n");
-    
-    sb.append("    apiVersion: ").append(toIndentedString(apiVersion)).append("\n");
-    sb.append("    kind: ").append(toIndentedString(kind)).append("\n");
-    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
-    sb.append("    spec: ").append(toIndentedString(spec)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1MongoDB {\n"
+        + "    apiVersion: " + toIndentedString(apiVersion) + "\n"
+        + "    kind: " + toIndentedString(kind) + "\n"
+        + "    metadata: " + toIndentedString(metadata) + "\n"
+        + "    spec: " + toIndentedString(spec) + "\n"
+        + "    status: " + toIndentedString(status) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

@@ -13,16 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import com.kubedb.client.models.ComGithubAppscodeKubeMonApiPrometheusSpec;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * ComGithubAppscodeKubeMonApiAgentSpec
@@ -62,7 +55,7 @@ public class ComGithubAppscodeKubeMonApiAgentSpec {
    * Get prometheus
    * @return prometheus
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public ComGithubAppscodeKubeMonApiPrometheusSpec getPrometheus() {
     return prometheus;
   }
@@ -93,13 +86,12 @@ public class ComGithubAppscodeKubeMonApiAgentSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ComGithubAppscodeKubeMonApiAgentSpec {\n");
-    
-    sb.append("    agent: ").append(toIndentedString(agent)).append("\n");
-    sb.append("    prometheus: ").append(toIndentedString(prometheus)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class ComGithubAppscodeKubeMonApiAgentSpec {\n"
+        + "    agent: " + toIndentedString(agent) + "\n"
+        + "    prometheus: " + toIndentedString(prometheus) + "\n"
+        + "}";
+    return sb;
   }
 
   /**

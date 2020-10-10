@@ -13,15 +13,9 @@
 
 package com.kubedb.client.models;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * V1alpha1SwiftSpec
@@ -43,7 +37,7 @@ public class V1alpha1SwiftSpec {
    * Get container
    * @return container
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getContainer() {
     return container;
   }
@@ -61,7 +55,7 @@ public class V1alpha1SwiftSpec {
    * Get prefix
    * @return prefix
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty()
   public String getPrefix() {
     return prefix;
   }
@@ -92,13 +86,12 @@ public class V1alpha1SwiftSpec {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1SwiftSpec {\n");
-    
-    sb.append("    container: ").append(toIndentedString(container)).append("\n");
-    sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+    String sb = "class V1alpha1SwiftSpec {\n"
+        + "    container: " + toIndentedString(container) + "\n"
+        + "    prefix: " + toIndentedString(prefix) + "\n"
+        + "}";
+    return sb;
   }
 
   /**
